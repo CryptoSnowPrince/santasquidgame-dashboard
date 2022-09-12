@@ -36,7 +36,7 @@ const StyledNav = styled.nav`
 `;
 
 const FixedContainer = styled.div<{ showMenu: boolean; height: number }>`
-  position: fixed;
+  position: sticky;
   top: ${({ showMenu, height }) => (showMenu ? 0 : `-${height}px`)};
   left: 0;
   transition: top 0.2s;
@@ -95,34 +95,34 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
 
   const totalTopMenuHeight = banner ? MENU_HEIGHT + topBannerHeight : MENU_HEIGHT;
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentOffset = window.pageYOffset;
-      const isBottomOfPage = window.document.body.clientHeight === currentOffset + window.innerHeight;
-      const isTopOfPage = currentOffset === 0;
-      // Always show the menu when user reach the top
-      if (isTopOfPage) {
-        setShowMenu(true);
-      }
-      // Avoid triggering anything at the bottom because of layout shift
-      else if (!isBottomOfPage) {
-        if (currentOffset < refPrevOffset.current || currentOffset <= totalTopMenuHeight) {
-          // Has scroll up
-          setShowMenu(true);
-        } else {
-          // Has scroll down
-          setShowMenu(false);
-        }
-      }
-      refPrevOffset.current = currentOffset;
-    };
-    const throttledHandleScroll = throttle(handleScroll, 200);
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const currentOffset = window.pageYOffset;
+  //     const isBottomOfPage = window.document.body.clientHeight === currentOffset + window.innerHeight;
+  //     const isTopOfPage = currentOffset === 0;
+  //     // Always show the menu when user reach the top
+  //     if (isTopOfPage) {
+  //       setShowMenu(true);
+  //     }
+  //     // Avoid triggering anything at the bottom because of layout shift
+  //     else if (!isBottomOfPage) {
+  //       if (currentOffset < refPrevOffset.current || currentOffset <= totalTopMenuHeight) {
+  //         // Has scroll up
+  //         setShowMenu(true);
+  //       } else {
+  //         // Has scroll down
+  //         setShowMenu(false);
+  //       }
+  //     }
+  //     refPrevOffset.current = currentOffset;
+  //   };
+  //   const throttledHandleScroll = throttle(handleScroll, 200);
 
-    window.addEventListener("scroll", throttledHandleScroll);
-    return () => {
-      window.removeEventListener("scroll", throttledHandleScroll);
-    };
-  }, [totalTopMenuHeight]);
+  //   window.addEventListener("scroll", throttledHandleScroll);
+  //   return () => {
+  //     window.removeEventListener("scroll", throttledHandleScroll);
+  //   };
+  // }, [totalTopMenuHeight]);
 
   // Find the home link if provided
   const homeLink = links.find((link) => link.label === "Home");
@@ -145,11 +145,11 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
               {/* {!isMobile && <MenuItems items={links} activeItem={activeItem} activeSubItem={activeSubItem} ml="24px" />} */}
             </Flex>
             <Flex alignItems="center" height="100%">
-              {!isMobile && !isMd && (
+              {/* {!isMobile && !isMd && (
                 <Box mr="12px">
                   <CakePrice showSkeleton={false} cakePriceUsd={cakePriceUsd} />
                 </Box>
-              )}
+              )} */}
               <Box mt="4px">
                 <LangSelector
                   currentLang={currentLang}
@@ -164,7 +164,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
             </Flex>
           </StyledNav>
         </FixedContainer>
-        {subLinks && (
+        {/* {subLinks && (
           <Flex justifyContent="space-around">
             <SubMenuItems items={subLinksWithoutMobile} mt={`${totalTopMenuHeight + 1}px`} activeItem={activeSubItem} />
 
@@ -177,7 +177,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
               />
             )}
           </Flex>
-        )}
+        )} */}
         {/* <BodyWrapper mt={!subLinks ? `${totalTopMenuHeight + 1}px` : "0"}> */}
         <BodyWrapper>
           <Panel
