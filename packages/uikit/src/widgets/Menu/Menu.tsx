@@ -11,7 +11,7 @@ import { useMatchBreakpoints } from "../../contexts";
 import CakePrice from "../../components/CakePrice/CakePrice";
 import Panel from "./components/Panel";
 import Logo from "./components/Logo";
-import { MENU_HEIGHT, MOBILE_MENU_HEIGHT, TOP_BANNER_HEIGHT, TOP_BANNER_HEIGHT_MOBILE } from "./config";
+import { MENU_HEIGHT, MOBILE_MENU_HEIGHT, TOP_BANNER_HEIGHT, TOP_BANNER_HEIGHT_MOBILE, SIDEBAR_WIDTH_REDUCED, SIDEBAR_WIDTH_FULL } from "./config";
 import { NavProps } from "./types";
 import LangSelector from "../../components/LangSelector/LangSelector";
 import { MenuContext } from "./context";
@@ -52,16 +52,18 @@ const TopBannerContainer = styled.div<{ height: number }>`
   width: 100%;
 `;
 
-const BodyWrapper = styled(Box)`
+// const BodyWrapper = styled(Box)`
+const BodyWrapper = styled.div`
   position: relative;
   display: flex;
 `;
 
 const Inner = styled.div<{ isPushed: boolean; showMenu: boolean }>`
+  margin-left: ${({ isPushed }) => `${isPushed ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px`};
+  max-width: ${({ isPushed }) => `calc(100% - ${isPushed ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px)`};
   flex-grow: 1;
   transition: margin-top 0.2s, margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translate3d(0, 0, 0);
-  max-width: 100%;
 `;
 
 const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
@@ -176,9 +178,10 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
             )}
           </Flex>
         )}
-        <BodyWrapper mt={!subLinks ? `${totalTopMenuHeight + 1}px` : "0"}>
+        {/* <BodyWrapper mt={!subLinks ? `${totalTopMenuHeight + 1}px` : "0"}> */}
+        <BodyWrapper>
           <Panel
-            isPushed={true}
+            isPushed={isPushed}
             isMobile={isMobile}
             showMenu={showMenu}
             isDark={isDark}
@@ -190,7 +193,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
             pushNav={setIsPushed}
             links={links}
           />
-          <Inner isPushed={false} showMenu={showMenu}>
+          <Inner isPushed={isPushed} showMenu={showMenu}>
             {children}
             {/* <Footer
               items={footerLinks}
