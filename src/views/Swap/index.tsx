@@ -20,6 +20,7 @@ import { useIsTransactionUnsupported } from 'hooks/Trades'
 import UnsupportedCurrencyFooter from 'components/UnsupportedCurrencyFooter'
 import Footer from 'components/Menu/Footer'
 import { CommitButton } from 'components/CommitButton'
+import CardNav from 'components/CardNav'
 import { useRouter } from 'next/router'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useTranslation } from '@pancakeswap/localization'
@@ -174,13 +175,13 @@ export default function Swap() {
 
   const parsedAmounts = showWrap
     ? {
-        [Field.INPUT]: parsedAmount,
-        [Field.OUTPUT]: parsedAmount,
-      }
+      [Field.INPUT]: parsedAmount,
+      [Field.OUTPUT]: parsedAmount,
+    }
     : {
-        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-      }
+      [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+      [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+    }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   const isValid = !swapInputError
@@ -459,6 +460,7 @@ export default function Swap() {
           <StyledSwapContainer $isChartExpanded={false}>
             {/* <StyledInputCurrencyWrapper mt={isChartExpanded ? '24px' : '0'}> */}
             <StyledInputCurrencyWrapper mt='0'>
+              <CardNav />
               <AppBody>
                 <CurrencyInputHeader
                   title={t('Swap')}
@@ -633,8 +635,8 @@ export default function Swap() {
                           {priceImpactSeverity > 3 && !isExpertMode
                             ? t('Price Impact High')
                             : priceImpactSeverity > 2
-                            ? t('Swap Anyway')
-                            : t('Swap')}
+                              ? t('Swap Anyway')
+                              : t('Swap')}
                         </CommitButton>
                       </RowBetween>
                     ) : (
@@ -661,8 +663,8 @@ export default function Swap() {
                           (priceImpactSeverity > 3 && !isExpertMode
                             ? t('Price Impact Too High')
                             : priceImpactSeverity > 2
-                            ? t('Swap Anyway')
-                            : t('Swap'))}
+                              ? t('Swap Anyway')
+                              : t('Swap'))}
                       </CommitButton>
                     )}
                     {showApproveFlow && (
