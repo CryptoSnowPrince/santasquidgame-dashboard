@@ -109,7 +109,7 @@ export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const { t } = useTranslation()
   const { isMobile } = useMatchBreakpoints()
-  const [isChartExpanded, setIsChartExpanded] = useState(false)
+  // const [isChartExpanded, setIsChartExpanded] = useState(false)
   const [userChartPreference, setUserChartPreference] = useExchangeChartManager(isMobile)
   const [isChartDisplayed, setIsChartDisplayed] = useState(userChartPreference)
   const { refreshBlockNumber, isLoading } = useRefreshBlockNumberID()
@@ -420,9 +420,10 @@ export default function Swap() {
   }, [isAccessTokenSupported, currencies])
 
   return (
-    <Page removePadding={isChartExpanded} hideFooterOnDesktop={isChartExpanded}>
+    // <Page removePadding={isChartExpanded} hideFooterOnDesktop={isChartExpanded}>
+    <Page removePadding={false} hideFooterOnDesktop={false}>
       <Flex width="100%" justifyContent="center" position="relative">
-        {!isMobile && isChartSupported && (
+        {/* {!isMobile && isChartSupported && (
           <PriceChartContainer
             inputCurrencyId={inputCurrencyId}
             inputCurrency={currencies[Field.INPUT]}
@@ -433,8 +434,8 @@ export default function Swap() {
             isChartDisplayed={isChartDisplayed}
             currentSwapPrice={singleTokenPrice}
           />
-        )}
-        {isChartSupported && (
+        )} */}
+        {/* {isChartSupported && (
           <BottomDrawer
             content={
               <PriceChartContainer
@@ -452,10 +453,12 @@ export default function Swap() {
             isOpen={isChartDisplayed}
             setIsOpen={setIsChartDisplayed}
           />
-        )}
+        )} */}
         <Flex flexDirection="column">
-          <StyledSwapContainer $isChartExpanded={isChartExpanded}>
-            <StyledInputCurrencyWrapper mt={isChartExpanded ? '24px' : '0'}>
+          {/* <StyledSwapContainer $isChartExpanded={isChartExpanded}> */}
+          <StyledSwapContainer $isChartExpanded={false}>
+            {/* <StyledInputCurrencyWrapper mt={isChartExpanded ? '24px' : '0'}> */}
+            <StyledInputCurrencyWrapper mt='0'>
               <AppBody>
                 <CurrencyInputHeader
                   title={t('Swap')}
@@ -678,11 +681,11 @@ export default function Swap() {
               )}
             </StyledInputCurrencyWrapper>
           </StyledSwapContainer>
-          {isChartExpanded && (
+          {/* {isChartExpanded && (
             <Box display={['none', null, null, 'block']} width="100%" height="100%">
               <Footer variant="side" helpUrl={EXCHANGE_DOCS_URLS} />
             </Box>
-          )}
+          )} */}
         </Flex>
       </Flex>
     </Page>
