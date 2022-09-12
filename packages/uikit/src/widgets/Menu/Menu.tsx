@@ -142,7 +142,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
                 togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
                 isDark={isDark}
                 href={homeLink?.href ?? "/"} />
-              {!isMobile && <MenuItems items={links} activeItem={activeItem} activeSubItem={activeSubItem} ml="24px" />}
+              {/* {!isMobile && <MenuItems items={links} activeItem={activeItem} activeSubItem={activeSubItem} ml="24px" />} */}
             </Flex>
             <Flex alignItems="center" height="100%">
               {!isMobile && !isMd && (
@@ -208,7 +208,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
             /> */}
           </Inner>
         </BodyWrapper>
-        {isMobile && <BottomNav items={links} activeItem={activeItem} activeSubItem={activeSubItem} />}
+        {/* {isMobile && <BottomNav items={links} activeItem={activeItem} activeSubItem={activeSubItem} />} */}
       </Wrapper>
     </MenuContext.Provider>
   );

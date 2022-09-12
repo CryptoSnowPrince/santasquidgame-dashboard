@@ -19,7 +19,8 @@ export interface NavProps {
   linkComponent?: ElementType;
   rightSide?: ReactNode;
   banner?: ReactElement;
-  links: Array<MenuItemsType>;
+  links: Array<MenuEntry>;
+  // links: Array<MenuItemsType>;
   subLinks: Array<SubMenuItemsType>;
   footerLinks: Array<FooterLinkType>;
   activeItem: string;
@@ -65,5 +66,6 @@ export interface PanelProps {
   currentLang: string;
   langs: Language[];
   setLang: (lang: Language) => void;
-  links: Array<MenuItemsType>;
+  // links: Array<MenuItemsType>;
+  links: Array<MenuEntry>;
 }

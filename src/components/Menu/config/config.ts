@@ -10,6 +10,7 @@ import {
   NftIcon,
   NftFillIcon,
   MoreIcon,
+  MenuEntry,
 } from '@pancakeswap/uikit'
 import { ContextApi } from '@pancakeswap/localization'
 import { nftsBaseUrl } from 'views/Nft/market/constants'
@@ -195,3 +196,54 @@ const config: (t: ContextApi['t'], isDark: boolean, languageCode?: string, chain
     ].map((item) => addMenuItemSupported(item, chainId))
 
 export default config
+
+export const old_config: MenuEntry[] = [
+  {
+    label: 'Home',
+    icon: 'HomeIcon',
+    href: 'https://psidex.passive-income.io/',
+  },
+  {
+    label: 'Trade',
+    href: '/swap',
+    icon: 'TradeIcon',
+    initialOpenState: true,
+    items: [
+      {
+        label: 'Exchange',
+        href: '/swap',
+      },
+      {
+        label: 'Liquidity',
+        href: '/pool',
+      },
+    ],
+  },
+  {
+    label: "More",
+    icon: "MoreIcon",
+    href: "https://www.passive-income.io/",
+    items: [
+      // {
+      //   label: "Voting",
+      //   href: "https://voting.pancakeswap.finance",
+      // },
+      {
+        label: "PSI Website",
+        href: "https://www.passive-income.io/",
+      },
+      {
+        label: "Github",
+        href: "https://github.com/PSI-Passive-Income",
+      },
+      {
+        label: "Docs",
+        href: "https://passiveincome.gitbook.io/whitepaper/",
+      },
+      {
+        label: "Blog",
+        href: "https://p6ss1ve1nc0me.medium.com/passive-income-psi-375e6768cecf",
+      },
+    ],
+  },
+]
