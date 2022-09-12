@@ -199,11 +199,6 @@ export default config
 
 export const old_config: MenuEntry[] = [
   {
-    label: 'Home',
-    icon: 'HomeIcon',
-    href: 'https://psidex.passive-income.io/',
-  },
-  {
     label: 'Trade',
     href: '/swap',
     icon: 'TradeIcon',
@@ -220,30 +215,45 @@ export const old_config: MenuEntry[] = [
     ],
   },
   {
-    label: "More",
-    icon: "MoreIcon",
-    href: "https://www.passive-income.io/",
-    items: [
-      // {
-      //   label: "Voting",
-      //   href: "https://voting.pancakeswap.finance",
-      // },
-      {
-        label: "PSI Website",
-        href: "https://www.passive-income.io/",
-      },
-      {
-        label: "Github",
-        href: "https://github.com/PSI-Passive-Income",
-      },
-      {
-        label: "Docs",
-        href: "https://passiveincome.gitbook.io/whitepaper/",
-      },
-      {
-        label: "Blog",
-        href: "https://p6ss1ve1nc0me.medium.com/passive-income-psi-375e6768cecf",
-      },
-    ],
+    label: 'Staking',
+    href: 'https://poochain-fork-2022.web.app/',
+    icon: 'StakingIcon',
   },
+  {
+    label: 'Telegram',
+    href: 'https://t.me/PooChainPortal',
+    icon: 'TelegramIcon',
+  },
+  {
+    label: 'Twitter',
+    href: 'https://twitter.com/poo_chain',
+    icon: 'TwitterIcon',
+  },
+  // {
+  //   label: "More",
+  //   icon: "MoreIcon",
+  //   href: "https://www.passive-income.io/",
+  //   items: [
+  //     // {
+  //     //   label: "Voting",
+  //     //   href: "https://voting.pancakeswap.finance",
+  //     // },
+  //     {
+  //       label: "PSI Website",
+  //       href: "https://www.passive-income.io/",
+  //     },
+  //     {
+  //       label: "Github",
+  //       href: "https://github.com/PSI-Passive-Income",
+  //     },
+  //     {
+  //       label: "Docs",
+  //       href: "https://passiveincome.gitbook.io/whitepaper/",
+  //     },
+  //     {
+  //       label: "Blog",
+  //       href: "https://p6ss1ve1nc0me.medium.com/passive-income-psi-375e6768cecf",
+  //     },
+  //   ],
+  // },
 ]

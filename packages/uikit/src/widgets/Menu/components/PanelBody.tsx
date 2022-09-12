@@ -23,7 +23,7 @@ const Container = styled.div`
 `;
 
 const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
-//   const location = useLocation();
+  //   const location = useLocation();
 
   // Close the menu when a user clicks a link on mobile
   const handleClick = isMobile ? () => pushNav(false) : undefined;
@@ -32,7 +32,13 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
     <Container>
       {links.map((entry) => {
         const Icon = Icons[entry.icon];
-        const iconElement = <Icon width="24px" mr="8px" />;
+        const iconElement =
+          <Icon
+            marginLeft={entry.label === 'Staking' ? "4px" : "0px"}
+            marginTop={entry.label === 'Staking' ? "16px" : "0px"}
+            width={entry.label === 'Staking' ? "33px" : "30px"}
+            mr={entry.label === 'Staking' ? "3px" : "8px"}
+          />;
         const calloutClass = entry.calloutClass ? entry.calloutClass : undefined;
 
         if (entry.items) {
