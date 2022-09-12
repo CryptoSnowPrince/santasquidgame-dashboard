@@ -9,61 +9,64 @@ Install the dependencies
 
 ```shell
 yarn
-yarn start
+yarn dev
 ```
 
 Don't forget to setup your IDE with `eslint` and `prettier`.
 
-## Change BSC network
+## Project structure
 
-To change the BSC network from test net, modify the `REACT_APP_CHAIN_ID` value in `.env`.
-
-- MAIN NET `56`
-- TEST NET `97`
+- **components** contains generic components used inside the application.
+- **views** contains building blocks for each page. The entry point of a view is used as the root component of each route.
+- **config** contains all the config files and ABIs.
+- **state** contains the redux files for the global state of the app.
+- **context** contains global contexts (separated from the redux store)
+- **hooks** contains generic hooks.
+- **utils** contains generic utilities functions.
+- **pages** contains page components for next.js
 
 ## Tests
 
-Firstly, if you need to install cypress
+Run tests with `yarn test`.
 
-```js
-yarn cypress install
+## Issue reports
+
+A bug is a _demonstrable problem_ that is caused by the code in the repository.
+Good bug reports are extremely helpful - thank you!
+
+Guidelines for bug reports:
+
+1. **Use the GitHub issue search** &mdash; check if the issue has already been
+   reported.
+
+2. **Check if the issue has been fixed** &mdash; try to reproduce it using the
+   latest `master` or development branch in the repository.
+
+3. **Isolate the problem** &mdash; create a [reduced test
+   case](http://css-tricks.com/reduced-test-cases/) and a live example.
+
+4. **Add attachments** &mdash; add photos or videos
+
+A good bug report shouldn't leave others needing to chase you up for more
+information. Please try to be as detailed as possible in your report. What is
+your environment? What steps will reproduce the issue? What browser(s) and OS
+experience the problem? What would you expect to be the outcome? All these
+details will help people to fix any potential bugs.
+
+Template:
+
+```
+**Environment:**
+Device and OS:
+Browser:
+Reproducibility rate:
+
+**Steps to reproduce:**
+1.
+2.
+3.
+
+**Expected result:**
 ```
 
-Then to run the Cypress suite in CLI
-
-```js
-yarn cypress run
-```
-
-Or, to run Cypress with its GUI
-
-```js
-yarn cypress open
-```
-
-## Localisation
-
-_In order for the Crowdin API queries to work - you will need `REACT_APP_CROWDIN_APIKEY` & `REACT_APP_CROWDIN_PROJECTID` env variables set in your root `.env.development.local` file_
-
-### Adding translations
-
-A hook expose the function you need to translate content.
-
-```
-import useI18n from 'hooks/useI18n'
-...
-const TranslateString = useI18n()
-...
-TranslateString(id, 'fallback')
-```
-
-- **id** is the crowdin id of the string you want to translate.
-- **fallback** is a string fallback used if the id cannot be found.
-
-### Variables
-
-The translation component can handle variables being passed in from Crowdin, with no code changes.
-
-It will only work if there is only **one** variable passed in, and if that variable within Crowdin is wrapped in **%** signs, i.e.:
-
-Translation in crowdin: `%asset% Earned` [link](https://crowdin.com/translate/pancakeswap/8/en-de#330)
+A good bug report shouldn't leave others needing to chase you up for more.

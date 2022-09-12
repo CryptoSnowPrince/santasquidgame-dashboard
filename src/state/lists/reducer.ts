@@ -2,10 +2,18 @@ import { createReducer } from '@reduxjs/toolkit'
 import { getVersionUpgrade, VersionUpgrade } from '@uniswap/token-lists'
 // eslint-disable-next-line import/no-unresolved
 import { TokenList } from '@uniswap/token-lists/dist/types'
-import { DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL } from '../../constants/lists'
-import { updateVersion } from '../global/actions'
-import { acceptListUpdate, addList, fetchTokenList, removeList, selectList } from './actions'
-import DEFAULT_LIST from '../../constants/token/pancakeswap.json'
+import { DEFAULT_ACTIVE_LIST_URLS, UNSUPPORTED_LIST_URLS, DEFAULT_LIST_OF_LISTS } from '../../config/constants/lists'
+
+// import { updateVersion } from '../global/actions'
+import {
+  acceptListUpdate,
+  addList,
+  fetchTokenList,
+  removeList,
+  enableList,
+  disableList,
+  updateListVersion,
+} from './actions'
 
 export interface ListsState {
   readonly byUrl: {
@@ -18,10 +26,14 @@ export interface ListsState {
   }
   // this contains the default list of lists from the last time the updateVersion was called, i.e. the app was reloaded
   readonly lastInitializedDefaultListOfLists?: string[]
-  readonly selectedListUrl: string | undefined
+
+  // currently active lists
+  readonly activeListUrls: string[] | undefined
 }
 
-const NEW_LIST_STATE: ListsState['byUrl'][string] = {
+type ListState = ListsState['byUrl'][string]
+
+const NEW_LIST_STATE: ListState = {
   error: null,
   current: null,
   loadingRequestId: null,
@@ -30,21 +42,15 @@ const NEW_LIST_STATE: ListsState['byUrl'][string] = {
 
 type Mutable<T> = { -readonly [P in keyof T]: T[P] extends ReadonlyArray<infer U> ? U[] : T[P] }
 
-const initialState: ListsState = {
+export const initialState: ListsState = {
   lastInitializedDefaultListOfLists: DEFAULT_LIST_OF_LISTS,
   byUrl: {
-    ...DEFAULT_LIST_OF_LISTS.reduce<Mutable<ListsState['byUrl']>>((memo, listUrl) => {
+    ...DEFAULT_LIST_OF_LISTS.concat(...UNSUPPORTED_LIST_URLS).reduce<Mutable<ListsState['byUrl']>>((memo, listUrl) => {
       memo[listUrl] = NEW_LIST_STATE
       return memo
     }, {}),
-    [DEFAULT_TOKEN_LIST_URL]: {
-      error: null,
-      current: DEFAULT_LIST,
-      loadingRequestId: null,
-      pendingUpdate: null,
-    },
   },
-  selectedListUrl: DEFAULT_TOKEN_LIST_URL,
+  activeListUrls: DEFAULT_ACTIVE_LIST_URLS,
 }
 
 export default createReducer(initialState, (builder) =>
@@ -65,6 +71,7 @@ export default createReducer(initialState, (builder) =>
       // no-op if update does nothing
       if (current) {
         const upgradeType = getVersionUpgrade(current.version, tokenList.version)
+
         if (upgradeType === VersionUpgrade.NONE) return
         if (loadingRequestId === null || loadingRequestId === requestId) {
           state.byUrl[url] = {
@@ -76,6 +83,11 @@ export default createReducer(initialState, (builder) =>
           }
         }
       } else {
+        // activate if on default active
+        if (DEFAULT_ACTIVE_LIST_URLS.includes(url)) {
+          state.activeListUrls?.push(url)
+        }
+
         state.byUrl[url] = {
           ...state.byUrl[url],
           loadingRequestId: null,
@@ -99,13 +111,6 @@ export default createReducer(initialState, (builder) =>
         pendingUpdate: null,
       }
     })
-    .addCase(selectList, (state, { payload: url }) => {
-      state.selectedListUrl = url
-      // automatically adds list
-      if (!state.byUrl[url]) {
-        state.byUrl[url] = NEW_LIST_STATE
-      }
-    })
     .addCase(addList, (state, { payload: url }) => {
       if (!state.byUrl[url]) {
         state.byUrl[url] = NEW_LIST_STATE
@@ -115,8 +120,27 @@ export default createReducer(initialState, (builder) =>
       if (state.byUrl[url]) {
         delete state.byUrl[url]
       }
-      if (state.selectedListUrl === url) {
-        state.selectedListUrl = Object.keys(state.byUrl)[0]
+      // remove list from active urls if needed
+      if (state.activeListUrls && state.activeListUrls.includes(url)) {
+        state.activeListUrls = state.activeListUrls.filter((u) => u !== url)
+      }
+    })
+    .addCase(enableList, (state, { payload: url }) => {
+      if (!state.byUrl[url]) {
+        state.byUrl[url] = NEW_LIST_STATE
+      }
+
+      if (state.activeListUrls && !state.activeListUrls.includes(url)) {
+        state.activeListUrls.push(url)
+      }
+
+      if (!state.activeListUrls) {
+        state.activeListUrls = [url]
+      }
+    })
+    .addCase(disableList, (state, { payload: url }) => {
+      if (state.activeListUrls && state.activeListUrls.includes(url)) {
+        state.activeListUrls = state.activeListUrls.filter((u) => u !== url)
       }
     })
     .addCase(acceptListUpdate, (state, { payload: url }) => {
@@ -129,15 +153,15 @@ export default createReducer(initialState, (builder) =>
         current: state.byUrl[url].pendingUpdate,
       }
     })
-    .addCase(updateVersion, (state) => {
+    .addCase(updateListVersion, (state) => {
       // state loaded from localStorage, but new lists have never been initialized
       if (!state.lastInitializedDefaultListOfLists) {
         state.byUrl = initialState.byUrl
-        state.selectedListUrl = undefined
+        state.activeListUrls = initialState.activeListUrls
       } else if (state.lastInitializedDefaultListOfLists) {
         const lastInitializedSet = state.lastInitializedDefaultListOfLists.reduce<Set<string>>(
           (s, l) => s.add(l),
-          new Set()
+          new Set(),
         )
         const newListOfListsSet = DEFAULT_LIST_OF_LISTS.reduce<Set<string>>((s, l) => s.add(l), new Set())
 
@@ -155,5 +179,18 @@ export default createReducer(initialState, (builder) =>
       }
 
       state.lastInitializedDefaultListOfLists = DEFAULT_LIST_OF_LISTS
-    })
+
+      // if no active lists, activate defaults
+      if (!state.activeListUrls) {
+        state.activeListUrls = DEFAULT_ACTIVE_LIST_URLS
+
+        // for each list on default list, initialize if needed
+        DEFAULT_ACTIVE_LIST_URLS.forEach((listUrl: string) => {
+          if (!state.byUrl[listUrl]) {
+            state.byUrl[listUrl] = NEW_LIST_STATE
+          }
+          return true
+        })
+      }
+    }),
 )

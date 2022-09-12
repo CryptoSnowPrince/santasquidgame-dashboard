@@ -1,40 +1,35 @@
-import React, { useCallback, useState } from 'react'
-import { HelpCircle as Question } from 'react-feather'
+import { HelpIcon, useTooltip, Box, BoxProps, Placement } from '@pancakeswap/uikit'
 import styled from 'styled-components'
-import Tooltip from '../Tooltip'
+
+interface Props extends BoxProps {
+  text: string | React.ReactNode
+  placement?: Placement
+  size?: string
+}
 
 const QuestionWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.2rem;
-  border: none;
-  background: none;
-  outline: none;
-  cursor: default;
-  border-radius: 36px;
-  background-color: ${({ theme }) => theme.colors.invertedContrast};
-  color: ${({ theme }) => theme.colors.textSubtle};
-
   :hover,
   :focus {
     opacity: 0.7;
   }
 `
 
-export default function QuestionHelper({ text }: { text: string }) {
-  const [show, setShow] = useState<boolean>(false)
-
-  const open = useCallback(() => setShow(true), [setShow])
-  const close = useCallback(() => setShow(false), [setShow])
+const QuestionHelper: React.FC<React.PropsWithChildren<Props>> = ({
+  text,
+  placement = 'right-end',
+  size = '16px',
+  ...props
+}) => {
+  const { targetRef, tooltip, tooltipVisible } = useTooltip(text, { placement })
 
   return (
-    <span style={{ marginLeft: 4 }}>
-      <Tooltip text={text} show={show}>
-        <QuestionWrapper onClick={open} onMouseEnter={open} onMouseLeave={close}>
-          <Question size={16} />
-        </QuestionWrapper>
-      </Tooltip>
-    </span>
+    <Box {...props}>
+      {tooltipVisible && tooltip}
+      <QuestionWrapper ref={targetRef}>
+        <HelpIcon color="textSubtle" width={size} />
+      </QuestionWrapper>
+    </Box>
   )
 }
+
+export default QuestionHelper

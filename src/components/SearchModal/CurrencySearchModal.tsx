@@ -1,80 +1,170 @@
-import { Currency } from '@pancakeswap-libs/sdk'
-import React, { useCallback, useEffect, useState } from 'react'
-import useLast from '../../hooks/useLast'
-import { useSelectedListUrl } from '../../state/lists/hooks'
-import Modal from '../Modal'
-import { CurrencySearch } from './CurrencySearch'
-import { ListSelect } from './ListSelect'
+import { useCallback, useState, useRef, useEffect } from 'react'
+import { Currency, Token } from '@pancakeswap/sdk'
+import {
+  ModalContainer,
+  ModalHeader,
+  ModalTitle,
+  ModalBackButton,
+  ModalCloseButton,
+  ModalBody,
+  InjectedModalProps,
+  Heading,
+  Button,
+  useMatchBreakpoints,
+  MODAL_SWIPE_TO_CLOSE_VELOCITY,
+} from '@pancakeswap/uikit'
+import styled from 'styled-components'
+import { usePreviousValue } from '@pancakeswap/hooks'
+import { TokenList } from '@uniswap/token-lists'
+import { useTranslation } from '@pancakeswap/localization'
+import CurrencySearch from './CurrencySearch'
+import ImportToken from './ImportToken'
+import Manage from './Manage'
+import ImportList from './ImportList'
+import { CurrencyModalView } from './types'
 
-interface CurrencySearchModalProps {
-  isOpen: boolean
-  onDismiss: () => void
+const Footer = styled.div`
+  width: 100%;
+  background-color: ${({ theme }) => theme.colors.backgroundAlt};
+  text-align: center;
+`
+const StyledModalContainer = styled(ModalContainer)`
+  width: 100%;
+  min-width: 320px;
+  max-width: 420px !important;
+  min-height: calc(var(--vh, 1vh) * 90);
+  ${({ theme }) => theme.mediaQueries.md} {
+    min-height: auto;
+  }
+`
+
+const StyledModalBody = styled(ModalBody)`
+  padding: 24px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`
+
+export interface CurrencySearchModalProps extends InjectedModalProps {
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherSelectedCurrency?: Currency | null
-  // eslint-disable-next-line react/no-unused-prop-types
   showCommonBases?: boolean
+  commonBasesType?: string
 }
 
 export default function CurrencySearchModal({
-  isOpen,
-  onDismiss,
+  onDismiss = () => null,
   onCurrencySelect,
   selectedCurrency,
   otherSelectedCurrency,
+  showCommonBases = true,
+  commonBasesType,
 }: CurrencySearchModalProps) {
-  const [listView, setListView] = useState<boolean>(false)
-  const lastOpen = useLast(isOpen)
-
-  useEffect(() => {
-    if (isOpen && !lastOpen) {
-      setListView(false)
-    }
-  }, [isOpen, lastOpen])
+  const [modalView, setModalView] = useState<CurrencyModalView>(CurrencyModalView.search)
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
+      onDismiss?.()
       onCurrencySelect(currency)
-      onDismiss()
     },
-    [onDismiss, onCurrencySelect]
+    [onDismiss, onCurrencySelect],
   )
 
-  const handleClickChangeList = useCallback(() => {
-    setListView(true)
-  }, [])
-  const handleClickBack = useCallback(() => {
-    setListView(false)
-  }, [])
+  // for token import view
+  const prevView = usePreviousValue(modalView)
 
-  const selectedListUrl = useSelectedListUrl()
-  const noListSelected = !selectedListUrl
+  // used for import token flow
+  const [importToken, setImportToken] = useState<Token | undefined>()
+
+  // used for import list
+  const [importList, setImportList] = useState<TokenList | undefined>()
+  const [listURL, setListUrl] = useState<string | undefined>()
+
+  const { t } = useTranslation()
+
+  const config = {
+    [CurrencyModalView.search]: { title: t('Select a Token'), onBack: undefined },
+    [CurrencyModalView.manage]: { title: t('Manage'), onBack: () => setModalView(CurrencyModalView.search) },
+    [CurrencyModalView.importToken]: {
+      title: t('Import Tokens'),
+      onBack: () =>
+        setModalView(prevView && prevView !== CurrencyModalView.importToken ? prevView : CurrencyModalView.search),
+    },
+    [CurrencyModalView.importList]: { title: t('Import List'), onBack: () => setModalView(CurrencyModalView.search) },
+  }
+  const { isMobile } = useMatchBreakpoints()
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const [height, setHeight] = useState(undefined)
+  useEffect(() => {
+    if (!wrapperRef.current) return
+    setHeight(wrapperRef.current.offsetHeight - 330)
+  }, [])
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} minHeight={listView ? 40 : noListSelected ? 0 : 80}>
-      {listView ? (
-        <ListSelect onDismiss={onDismiss} onBack={handleClickBack} />
-      ) : noListSelected ? (
-        <CurrencySearch
-          isOpen={isOpen}
-          onDismiss={onDismiss}
-          onCurrencySelect={handleCurrencySelect}
-          onChangeList={handleClickChangeList}
-          selectedCurrency={selectedCurrency}
-          otherSelectedCurrency={otherSelectedCurrency}
-          showCommonBases={false}
-        />
-      ) : (
-        <CurrencySearch
-          isOpen={isOpen}
-          onDismiss={onDismiss}
-          onCurrencySelect={handleCurrencySelect}
-          onChangeList={handleClickChangeList}
-          selectedCurrency={selectedCurrency}
-          otherSelectedCurrency={otherSelectedCurrency}
-          showCommonBases={false}
-        />
-      )}
-    </Modal>
+    <StyledModalContainer
+      drag={isMobile ? 'y' : false}
+      dragConstraints={{ top: 0, bottom: 600 }}
+      dragElastic={{ top: 0 }}
+      dragSnapToOrigin
+      onDragStart={() => {
+        if (wrapperRef.current) wrapperRef.current.style.animation = 'none'
+      }}
+      // @ts-ignore
+      onDragEnd={(e, info) => {
+        if (info.velocity.y > MODAL_SWIPE_TO_CLOSE_VELOCITY && onDismiss) onDismiss()
+      }}
+      ref={wrapperRef}
+    >
+      <ModalHeader>
+        <ModalTitle>
+          {config[modalView].onBack && <ModalBackButton onBack={config[modalView].onBack} />}
+          <Heading>{config[modalView].title}</Heading>
+        </ModalTitle>
+        <ModalCloseButton onDismiss={onDismiss} />
+      </ModalHeader>
+      <StyledModalBody>
+        {modalView === CurrencyModalView.search ? (
+          <CurrencySearch
+            onCurrencySelect={handleCurrencySelect}
+            selectedCurrency={selectedCurrency}
+            otherSelectedCurrency={otherSelectedCurrency}
+            showCommonBases={showCommonBases}
+            commonBasesType={commonBasesType}
+            showImportView={() => setModalView(CurrencyModalView.importToken)}
+            setImportToken={setImportToken}
+            height={height}
+          />
+        ) : modalView === CurrencyModalView.importToken && importToken ? (
+          <ImportToken tokens={[importToken]} handleCurrencySelect={handleCurrencySelect} />
+        ) : modalView === CurrencyModalView.importList && importList && listURL ? (
+          <ImportList list={importList} listURL={listURL} onImport={() => setModalView(CurrencyModalView.manage)} />
+        ) : modalView === CurrencyModalView.manage ? (
+          <Manage
+            setModalView={setModalView}
+            setImportToken={setImportToken}
+            setImportList={setImportList}
+            setListUrl={setListUrl}
+          />
+        ) : (
+          ''
+        )}
+        {modalView === CurrencyModalView.search && (
+          <Footer>
+            <Button
+              scale="sm"
+              variant="text"
+              onClick={() => setModalView(CurrencyModalView.manage)}
+              className="list-token-manage-button"
+            >
+              {t('Manage Tokens')}
+            </Button>
+          </Footer>
+        )}
+      </StyledModalBody>
+    </StyledModalContainer>
   )
 }

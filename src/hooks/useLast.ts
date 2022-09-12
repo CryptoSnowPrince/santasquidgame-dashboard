@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react'
  * @param value changing value
  * @param filterFn function that determines whether a given value should be considered for the last value
  */
-export default function useLast<T>(
+function useLast<T>(
   value: T | undefined | null,
-  filterFn?: (value: T | null | undefined) => boolean
+  filterFn?: (value: T | null | undefined) => boolean,
 ): T | null | undefined {
-  const [last, setLast] = useState<T | null | undefined>(filterFn && filterFn(value) ? value : undefined)
+  const [last, setLast] = useState<T | null | undefined>(() => (filterFn && filterFn(value) ? value : undefined))
   useEffect(() => {
     setLast((prev) => {
       const shouldUse: boolean = filterFn ? filterFn(value) : true
@@ -28,6 +28,8 @@ function isDefined<T>(x: T | null | undefined): x is T {
  * Returns the last truthy value of type T
  * @param value changing value
  */
-export function useLastTruthy<T>(value: T | undefined | null): T | null | undefined {
+function useLastTruthy<T>(value: T | undefined | null): T | null | undefined {
   return useLast(value, isDefined)
 }
+
+export default useLastTruthy

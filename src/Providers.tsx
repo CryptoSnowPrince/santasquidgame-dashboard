@@ -1,25 +1,47 @@
-import React from 'react'
-import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
+import { ModalProvider, light, dark, UIKitProvider } from '@pancakeswap/uikit'
 import { Provider } from 'react-redux'
-import { ModalProvider } from '@pancakeswap-libs/uikit'
-import { NetworkContextName } from './constants'
-import store from './state'
-import getLibrary from './utils/getLibrary'
-import { ThemeContextProvider } from './ThemeContext'
+import { SWRConfig } from 'swr'
+import { LanguageProvider } from '@pancakeswap/localization'
+import { fetchStatusMiddleware } from 'hooks/useSWRContract'
+import { Store } from '@reduxjs/toolkit'
+import { ThemeProvider as NextThemeProvider, useTheme as useNextTheme } from 'next-themes'
+import { WagmiProvider } from '@pancakeswap/wagmi'
+import { client } from 'utils/wagmi'
+import { HistoryManagerProvider } from 'contexts/HistoryContext'
 
-const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
-
-const Providers: React.FC = ({ children }) => {
+const StyledUIKitProvider: React.FC<React.PropsWithChildren> = ({ children, ...props }) => {
+  const { resolvedTheme } = useNextTheme()
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Web3ProviderNetwork getLibrary={getLibrary}>
-        <Provider store={store}>
-          <ThemeContextProvider>
-            <ModalProvider>{children}</ModalProvider>
-          </ThemeContextProvider>
-        </Provider>
-      </Web3ProviderNetwork>
-    </Web3ReactProvider>
+    <UIKitProvider theme={resolvedTheme === 'dark' ? dark : light} {...props}>
+      {children}
+    </UIKitProvider>
+  )
+}
+
+const Providers: React.FC<React.PropsWithChildren<{ store: Store; children: React.ReactNode }>> = ({
+  children,
+  store,
+}) => {
+  return (
+    <WagmiProvider client={client}>
+      <Provider store={store}>
+        <NextThemeProvider>
+          <StyledUIKitProvider>
+            <LanguageProvider>
+              <SWRConfig
+                value={{
+                  use: [fetchStatusMiddleware],
+                }}
+              >
+                <HistoryManagerProvider>
+                  <ModalProvider>{children}</ModalProvider>
+                </HistoryManagerProvider>
+              </SWRConfig>
+            </LanguageProvider>
+          </StyledUIKitProvider>
+        </NextThemeProvider>
+      </Provider>
+    </WagmiProvider>
   )
 }
 
