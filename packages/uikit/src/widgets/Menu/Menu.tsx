@@ -9,6 +9,7 @@ import MenuItems from "../../components/MenuItems/MenuItems";
 import { SubMenuItems } from "../../components/SubMenuItems";
 import { useMatchBreakpoints } from "../../contexts";
 import CakePrice from "../../components/CakePrice/CakePrice";
+import Panel from "./components/Panel";
 import Logo from "./components/Logo";
 import { MENU_HEIGHT, MOBILE_MENU_HEIGHT, TOP_BANNER_HEIGHT, TOP_BANNER_HEIGHT_MOBILE } from "./config";
 import { NavProps } from "./types";
@@ -83,6 +84,9 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
 }) => {
   const { isMobile, isMd } = useMatchBreakpoints();
   const [showMenu, setShowMenu] = useState(true);
+
+  const [isPushed, setIsPushed] = useState(!isMobile);
+
   const refPrevOffset = useRef(typeof window === "undefined" ? 0 : window.pageYOffset);
 
   const topBannerHeight = isMobile ? TOP_BANNER_HEIGHT_MOBILE : TOP_BANNER_HEIGHT;
@@ -131,7 +135,11 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
           {banner && <TopBannerContainer height={topBannerHeight}>{banner}</TopBannerContainer>}
           <StyledNav>
             <Flex>
-              <Logo isDark={isDark} href={homeLink?.href ?? "/"} />
+              <Logo
+                isPushed={isPushed}
+                togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
+                isDark={isDark}
+                href={homeLink?.href ?? "/"} />
               {!isMobile && <MenuItems items={links} activeItem={activeItem} activeSubItem={activeSubItem} ml="24px" />}
             </Flex>
             <Flex alignItems="center" height="100%">
@@ -169,9 +177,22 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
           </Flex>
         )}
         <BodyWrapper mt={!subLinks ? `${totalTopMenuHeight + 1}px` : "0"}>
+          <Panel
+            isPushed={true}
+            isMobile={isMobile}
+            showMenu={showMenu}
+            isDark={isDark}
+            toggleTheme={toggleTheme}
+            langs={langs}
+            setLang={setLang}
+            currentLang={currentLang}
+            cakePriceUsd={cakePriceUsd}
+            pushNav={setIsPushed}
+            links={links}
+          />
           <Inner isPushed={false} showMenu={showMenu}>
             {children}
-            <Footer
+            {/* <Footer
               items={footerLinks}
               isDark={isDark}
               toggleTheme={toggleTheme}
@@ -181,7 +202,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
               cakePriceUsd={cakePriceUsd}
               buyCakeLabel={buyCakeLabel}
               mb={[`${MOBILE_MENU_HEIGHT}px`, null, "0px"]}
-            />
+            /> */}
           </Inner>
         </BodyWrapper>
         {isMobile && <BottomNav items={links} activeItem={activeItem} activeSubItem={activeSubItem} />}

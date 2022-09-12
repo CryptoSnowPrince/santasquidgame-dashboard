@@ -32,3 +32,38 @@ export interface NavProps {
   langs: Language[];
   setLang: (lang: Language) => void;
 }
+
+export interface LangType {
+  code: string;
+  language: string;
+}
+
+export interface PushedProps {
+  isPushed: boolean;
+  pushNav: (isPushed: boolean) => void;
+}
+
+export interface MenuSubEntry {
+  label: string;
+  href: string;
+  calloutClass?: string;
+}
+
+export interface MenuEntry {
+  label: string;
+  icon: string;
+  items?: MenuSubEntry[];
+  href?: string;
+  calloutClass?: string;
+  initialOpenState?: boolean;
+}
+
+export interface PanelProps {
+  isDark: boolean;
+  toggleTheme: (isDark: boolean) => void;
+  cakePriceUsd?: number;
+  currentLang: string;
+  langs: Language[];
+  setLang: (lang: Language) => void;
+  links: Array<MenuItemsType>;
+}
