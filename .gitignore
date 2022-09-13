@@ -46,3 +46,6 @@ debug.log*
 # turbo
 .turbo
 .yarnrc
+.firebaserc
+.firebase/
+firebase.json

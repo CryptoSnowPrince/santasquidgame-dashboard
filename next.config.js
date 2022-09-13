@@ -41,7 +41,9 @@ const config = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['static-nft.pancakeswap.com'],
+    loader: 'imgix',
+    path: 'https://pancakeswap.finance/',
+    // domains: ['static-nft.pancakeswap.com'],
   },
   async rewrites() {
     return [
