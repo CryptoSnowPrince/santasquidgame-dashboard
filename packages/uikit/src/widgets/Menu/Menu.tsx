@@ -29,7 +29,8 @@ const StyledNav = styled.nav`
   height: ${MENU_HEIGHT}px;
   // background-color: ${({ theme }) => theme.nav.background};
   background-color: #302f30;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.cardBorder};
+  // border-bottom: 1px solid ${({ theme }) => theme.colors.cardBorder};
+  border-bottom: 1px solid #302f30;
   transform: translate3d(0, 0, 0);
 
   padding-left: 16px;
