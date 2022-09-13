@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { NextLinkFromReactRouter } from 'components/NextLink'
 import { Menu as UikitMenu } from '@pancakeswap/uikit'
@@ -39,6 +39,12 @@ const Menu = (props) => {
   const getFooterLinks = useMemo(() => {
     return footerLinks(t)
   }, [t])
+
+  useEffect(() => {
+    if(!isDark) {
+      setTheme('dark')
+    }
+  }, [])
 
   return (
     <>
