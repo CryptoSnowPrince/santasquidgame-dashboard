@@ -75,27 +75,6 @@ const config: (t: ContextApi['t'], isDark: boolean, languageCode?: string, chain
           // },
         ].map((item) => addMenuItemSupported(item, chainId)),
       },
-      {
-        label: 'Staking',
-        href: 'https://poochain-fork-2022.web.app/',
-        icon: SwapIcon,
-        fillIcon: SwapFillIcon,
-        showItemsOnMobile: false,
-      },
-      {
-        label: 'Telegram',
-        href: 'https://t.me/PooChainPortal',
-        icon: SwapIcon,
-        fillIcon: SwapFillIcon,
-        showItemsOnMobile: false,
-      },
-      {
-        label: 'Twitter',
-        href: 'https://twitter.com/poo_chain',
-        icon: SwapIcon,
-        fillIcon: SwapFillIcon,
-        showItemsOnMobile: false,
-      },
       // {
       //   label: t('Earn'),
       //   href: '/farms',
@@ -220,6 +199,11 @@ export default config
 
 export const oldConfig: MenuEntry[] = [
   {
+    label: 'Home',
+    icon: 'HomeIcon',
+    href: '/',
+  },
+  {
     label: 'Trade',
     href: '/swap',
     icon: 'TradeIcon',
@@ -250,31 +234,4 @@ export const oldConfig: MenuEntry[] = [
     href: 'https://twitter.com/poo_chain',
     icon: 'TwitterIcon',
   },
-  // {
-  //   label: "More",
-  //   icon: "MoreIcon",
-  //   href: "https://www.passive-income.io/",
-  //   items: [
-  //     // {
-  //     //   label: "Voting",
-  //     //   href: "https://voting.pancakeswap.finance",
-  //     // },
-  //     {
-  //       label: "PSI Website",
-  //       href: "https://www.passive-income.io/",
-  //     },
-  //     {
-  //       label: "Github",
-  //       href: "https://github.com/PSI-Passive-Income",
-  //     },
-  //     {
-  //       label: "Docs",
-  //       href: "https://passiveincome.gitbook.io/whitepaper/",
-  //     },
-  //     {
-  //       label: "Blog",
-  //       href: "https://p6ss1ve1nc0me.medium.com/passive-income-psi-375e6768cecf",
-  //     },
-  //   ],
-  // },
 ]

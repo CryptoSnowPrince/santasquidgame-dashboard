@@ -23,10 +23,14 @@ const Menu = (props) => {
   const { pathname } = useRouter()
   const [showPhishingWarningBanner] = usePhishingBannerManager()
 
-  const menuItems = useMenuItems()
+  // const menuItems = useMenuItems()
 
-  const activeMenuItem = getActiveMenuItem({ menuConfig: menuItems, pathname })
-  const activeSubMenuItem = getActiveSubMenuItem({ menuItem: activeMenuItem, pathname })
+  // const activeMenuItem = getActiveMenuItem({ menuConfig: menuItems, pathname })
+  // const activeSubMenuItem = getActiveSubMenuItem({ menuItem: activeMenuItem, pathname })
+  // useEffect(() => {
+  //   console.log("Menu activeMenuItem: ", activeMenuItem?.href)
+  //   console.log("Menu activeSubMenuItem: ", activeSubMenuItem?.href)
+  // }, [activeMenuItem, activeSubMenuItem])
 
   const toggleTheme = useMemo(() => {
     return () => setTheme(isDark ? 'light' : 'dark')
@@ -58,10 +62,10 @@ const Menu = (props) => {
         cakePriceUsd={cakePriceUsd}
         // links={menuItems}
         links={oldConfig}
-        subLinks={activeMenuItem?.hideSubNav || activeSubMenuItem?.hideSubNav ? [] : activeMenuItem?.items}
+        // subLinks={activeMenuItem?.hideSubNav || activeSubMenuItem?.hideSubNav ? [] : activeMenuItem?.items}
         footerLinks={getFooterLinks}
-        activeItem={activeMenuItem?.href}
-        activeSubItem={activeSubMenuItem?.href}
+        // activeItem={activeMenuItem?.href}
+        // activeSubItem={activeSubMenuItem?.href}
         buyCakeLabel={t('Buy CAKE')}
         {...props}
       />
