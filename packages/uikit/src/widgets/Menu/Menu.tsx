@@ -27,7 +27,8 @@ const StyledNav = styled.nav`
   align-items: center;
   width: 100%;
   height: ${MENU_HEIGHT}px;
-  background-color: ${({ theme }) => theme.nav.background};
+  // background-color: ${({ theme }) => theme.nav.background};
+  background-color: #302f30;
   border-bottom: 1px solid ${({ theme }) => theme.colors.cardBorder};
   transform: translate3d(0, 0, 0);
 
@@ -195,7 +196,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
           />
           <Inner isPushed={isPushed} showMenu={showMenu}>
             {children}
-            {/* <Footer
+            <Footer
               items={footerLinks}
               isDark={isDark}
               toggleTheme={toggleTheme}
@@ -205,7 +206,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
               cakePriceUsd={cakePriceUsd}
               buyCakeLabel={buyCakeLabel}
               mb={[`${MOBILE_MENU_HEIGHT}px`, null, "0px"]}
-            /> */}
+            />
           </Inner>
         </BodyWrapper>
         {/* {isMobile && <BottomNav items={links} activeItem={activeItem} activeSubItem={activeSubItem} />} */}
