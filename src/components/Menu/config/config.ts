@@ -78,17 +78,23 @@ const config: (t: ContextApi['t'], isDark: boolean, languageCode?: string, chain
       {
         label: 'Staking',
         href: 'https://poochain-fork-2022.web.app/',
-        icon: 'StakingIcon',
+        icon: SwapIcon,
+        fillIcon: SwapFillIcon,
+        showItemsOnMobile: false,
       },
       {
         label: 'Telegram',
         href: 'https://t.me/PooChainPortal',
-        icon: 'TelegramIcon',
+        icon: SwapIcon,
+        fillIcon: SwapFillIcon,
+        showItemsOnMobile: false,
       },
       {
         label: 'Twitter',
         href: 'https://twitter.com/poo_chain',
-        icon: 'TwitterIcon',
+        icon: SwapIcon,
+        fillIcon: SwapFillIcon,
+        showItemsOnMobile: false,
       },
       // {
       //   label: t('Earn'),
