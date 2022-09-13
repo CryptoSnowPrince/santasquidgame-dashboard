@@ -15,12 +15,10 @@ function Nav({ activeIndex = 0 }: { activeIndex?: number }) {
   return (
     <StyledNav>
       <ButtonMenu activeIndex={activeIndex} scale="sm" variant="subtle">
-        {/* <ButtonMenuItem id="swap-nav-link" to="/swap" as={Link}> */}
         <ButtonMenuItem id="swap-nav-link" to="/swap" as={NextLinkFromReactRouter}>
           {t('Swap')}
         </ButtonMenuItem>
-        {/* <ButtonMenuItem id="pool-nav-link" to="/pool" as={Link}> */}
-        <ButtonMenuItem id="pool-nav-link" to="/pool" as={NextLinkFromReactRouter}>
+        <ButtonMenuItem id="pool-nav-link" to="/liquidity" as={NextLinkFromReactRouter}>
           {t('Liquidity')}
         </ButtonMenuItem>
       </ButtonMenu>
