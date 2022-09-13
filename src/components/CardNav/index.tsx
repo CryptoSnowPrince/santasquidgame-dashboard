@@ -5,7 +5,7 @@ import { useTranslation } from '@pancakeswap/localization'
 import { NextLinkFromReactRouter } from 'components/NextLink'
 
 const StyledNav = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 15px;
   display: flex;
   justify-content: center;
 `

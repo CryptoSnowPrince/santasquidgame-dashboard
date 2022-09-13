@@ -28,6 +28,7 @@ import useNativeCurrency from 'hooks/useNativeCurrency'
 import { getZapAddress } from 'utils/addressHelpers'
 import { ZapCheckbox } from 'components/CurrencyInputPanel/ZapCheckbox'
 import { CommitButton } from 'components/CommitButton'
+import CardNav from 'components/CardNav'
 import { useTranslation } from '@pancakeswap/localization'
 import { useLPApr } from 'state/swap/hooks'
 import { ROUTER_ADDRESS } from 'config/constants/exchange'
@@ -136,8 +137,8 @@ export default function RemoveLiquidity() {
     [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
       ? '0'
       : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
-      ? '<1'
-      : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
+        ? '<1'
+        : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
     [Field.LIQUIDITY]:
       independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
     [Field.CURRENCY_A]:
@@ -491,7 +492,7 @@ export default function RemoveLiquidity() {
   const oneCurrencyIsNative = currencyA?.isNative || currencyB?.isNative
   const oneCurrencyIsWNative = Boolean(
     chainId &&
-      ((currencyA && WNATIVE[chainId]?.equals(currencyA)) || (currencyB && WNATIVE[chainId]?.equals(currencyB))),
+    ((currencyA && WNATIVE[chainId]?.equals(currencyA)) || (currencyB && WNATIVE[chainId]?.equals(currencyB))),
   )
 
   const handleSelectCurrencyA = useCallback(
@@ -563,6 +564,7 @@ export default function RemoveLiquidity() {
 
   return (
     <Page>
+      <CardNav activeIndex={1} />
       <AppBody>
         <AppHeader
           backTo="/liquidity"
@@ -681,17 +683,15 @@ export default function RemoveLiquidity() {
                     <RowBetween style={{ justifyContent: 'flex-end', fontSize: '14px' }}>
                       {oneCurrencyIsNative ? (
                         <StyledInternalLink
-                          href={`/remove/${currencyA?.isNative ? WNATIVE[chainId]?.address : currencyIdA}/${
-                            currencyB?.isNative ? WNATIVE[chainId]?.address : currencyIdB
-                          }`}
+                          href={`/remove/${currencyA?.isNative ? WNATIVE[chainId]?.address : currencyIdA}/${currencyB?.isNative ? WNATIVE[chainId]?.address : currencyIdB
+                            }`}
                         >
                           {t('Receive %currency%', { currency: WNATIVE[chainId]?.symbol })}
                         </StyledInternalLink>
                       ) : oneCurrencyIsWNative ? (
                         <StyledInternalLink
-                          href={`/remove/${
-                            currencyA && currencyA.equals(WNATIVE[chainId]) ? native?.symbol : currencyIdA
-                          }/${currencyB && currencyB.equals(WNATIVE[chainId]) ? native?.symbol : currencyIdB}`}
+                          href={`/remove/${currencyA && currencyA.equals(WNATIVE[chainId]) ? native?.symbol : currencyIdA
+                            }/${currencyB && currencyB.equals(WNATIVE[chainId]) ? native?.symbol : currencyIdB}`}
                         >
                           {t('Receive %currency%', { currency: native?.symbol })}
                         </StyledInternalLink>

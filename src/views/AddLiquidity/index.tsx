@@ -17,6 +17,7 @@ import { logError } from 'utils/sentry'
 import { useIsTransactionUnsupported, useIsTransactionWarning } from 'hooks/Trades'
 import { useTranslation } from '@pancakeswap/localization'
 import UnsupportedCurrencyFooter from 'components/UnsupportedCurrencyFooter'
+import CardNav from 'components/CardNav'
 import { useZapContract } from 'hooks/useContract'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { getZapAddress } from 'utils/addressHelpers'
@@ -208,8 +209,8 @@ export default function AddLiquidity() {
     () => ({
       [independentField]:
         canZap &&
-        ((independentField === Field.CURRENCY_A && !zapTokenCheckedA) ||
-          (independentField === Field.CURRENCY_B && !zapTokenCheckedB))
+          ((independentField === Field.CURRENCY_A && !zapTokenCheckedA) ||
+            (independentField === Field.CURRENCY_B && !zapTokenCheckedB))
           ? ''
           : typedValue,
       [dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
@@ -343,17 +344,17 @@ export default function AddLiquidity() {
 
   const pendingText = preferZapInstead
     ? t('Zapping %amountA% %symbolA% and %amountB% %symbolB%', {
-        amountA: parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '0',
-        symbolA: currencies[Field.CURRENCY_A]?.symbol ?? '',
-        amountB: parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? '0',
-        symbolB: currencies[Field.CURRENCY_B]?.symbol ?? '',
-      })
+      amountA: parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '0',
+      symbolA: currencies[Field.CURRENCY_A]?.symbol ?? '',
+      amountB: parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? '0',
+      symbolB: currencies[Field.CURRENCY_B]?.symbol ?? '',
+    })
     : t('Supplying %amountA% %symbolA% and %amountB% %symbolB%', {
-        amountA: parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
-        symbolA: currencies[Field.CURRENCY_A]?.symbol ?? '',
-        amountB: parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? '',
-        symbolB: currencies[Field.CURRENCY_B]?.symbol ?? '',
-      })
+      amountA: parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
+      symbolA: currencies[Field.CURRENCY_A]?.symbol ?? '',
+      amountB: parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? '',
+      symbolB: currencies[Field.CURRENCY_B]?.symbol ?? '',
+    })
 
   const handleDismissConfirmation = useCallback(() => {
     // if there was a tx hash, we want to clear the input
@@ -598,6 +599,7 @@ export default function AddLiquidity() {
 
   return (
     <Page>
+      <CardNav activeIndex={1} />
       <AppBody>
         {!showAddLiquidity && (
           <ChoosePair
@@ -754,16 +756,16 @@ export default function AddLiquidity() {
                         </strong>{' '}
                         {zapIn.gasOverhead
                           ? t(
-                              'Some of your %token0% will be converted to %token1% before adding liquidity, but this may cause higher gas fees.',
-                              {
-                                token0: currencies[zapIn.swapTokenField]?.symbol,
-                                token1: currencies[zapIn.swapOutTokenField]?.symbol,
-                              },
-                            )
-                          : t('Some of your %token0% will be converted to %token1%.', {
+                            'Some of your %token0% will be converted to %token1% before adding liquidity, but this may cause higher gas fees.',
+                            {
                               token0: currencies[zapIn.swapTokenField]?.symbol,
                               token1: currencies[zapIn.swapOutTokenField]?.symbol,
-                            })}
+                            },
+                          )
+                          : t('Some of your %token0% will be converted to %token1%.', {
+                            token0: currencies[zapIn.swapTokenField]?.symbol,
+                            token1: currencies[zapIn.swapOutTokenField]?.symbol,
+                          })}
                       </MessageText>
                     </AutoColumn>
                   </Message>

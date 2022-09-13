@@ -4,6 +4,7 @@ import { Text, Flex, CardBody, CardFooter, Button, AddIcon } from '@pancakeswap/
 import Link from 'next/link'
 import { useWeb3React } from '@pancakeswap/wagmi'
 import { useTranslation } from '@pancakeswap/localization'
+import CardNav from 'components/CardNav'
 import FullPositionCard from '../../components/PositionCard'
 import { useTokenBalancesWithLoadingIndicator } from '../../state/wallet/hooks'
 import { usePairs, PairState } from '../../hooks/usePairs'
@@ -86,6 +87,7 @@ export default function Pool() {
 
   return (
     <Page>
+      <CardNav activeIndex={1} />
       <AppBody>
         <AppHeader title={t('Your Liquidity')} subtitle={t('Remove liquidity to receive tokens back')} />
         <Body>

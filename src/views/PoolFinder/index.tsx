@@ -3,6 +3,7 @@ import { AddIcon, Button, ChevronDownIcon, Text, useModal } from '@pancakeswap/u
 import { useWeb3React } from '@pancakeswap/wagmi'
 import { useTranslation } from '@pancakeswap/localization'
 import { NextLinkFromReactRouter } from 'components/NextLink'
+import CardNav from 'components/CardNav'
 import { BIG_INT_ZERO } from 'config/constants/exchange'
 import useNativeCurrency from 'hooks/useNativeCurrency'
 import { useCallback, useEffect, useState } from 'react'
@@ -96,6 +97,7 @@ export default function PoolFinder() {
 
   return (
     <Page>
+      <CardNav activeIndex={1} />
       <AppBody>
         <AppHeader title={t('Import Pool')} subtitle={t('Import an existing pool')} backTo="/liquidity" />
         <AutoColumn style={{ padding: '1rem' }} gap="md">
