@@ -192,6 +192,8 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
             cakePriceUsd={cakePriceUsd}
             pushNav={setIsPushed}
             links={links}
+            activeItem={activeItem}
+            activeSubItem={activeSubItem}
           />
           <Inner isPushed={isPushed} showMenu={showMenu}>
             {children}
