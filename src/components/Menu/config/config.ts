@@ -199,11 +199,6 @@ export default config
 
 export const oldConfig: MenuEntry[] = [
   {
-    label: 'Home',
-    icon: 'HomeIcon',
-    href: '/',
-  },
-  {
     label: 'Trade',
     href: '/swap',
     icon: 'TradeIcon',

@@ -13,9 +13,9 @@ const CHAINS = [
   bsc,
   // TODO: ETH
   // mainnet,
-  bscTest,
-  rinkeby,
-  goerli,
+  // bscTest,
+  // rinkeby,
+  // goerli,
 ]
 
 const getNodeRealUrl = (networkName: string) => {
