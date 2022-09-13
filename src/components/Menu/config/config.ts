@@ -197,7 +197,7 @@ const config: (t: ContextApi['t'], isDark: boolean, languageCode?: string, chain
 
 export default config
 
-export const old_config: MenuEntry[] = [
+export const oldConfig: MenuEntry[] = [
   {
     label: 'Trade',
     href: '/swap',
