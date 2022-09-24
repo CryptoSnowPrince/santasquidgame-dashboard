@@ -205,18 +205,25 @@ export const oldConfig: MenuEntry[] = [
     initialOpenState: true,
   },
   {
+    label: 'Liquidity',
+    href: '/liquidity',
+    icon: 'TradeIcon',
+  },
+  {
     label: 'Staking',
     href: 'https://poochain-fork-2022.web.app/',
     icon: 'StakingIcon',
   },
   {
     label: 'Telegram',
-    href: 'https://t.me/PooChainPortal',
+    // href: 'https://t.me/PooChainPortal',
+    href: 'https://pancakeswap.finance',
     icon: 'TelegramIcon',
   },
   {
     label: 'Twitter',
-    href: 'https://twitter.com/poo_chain',
+    // href: 'https://twitter.com/poo_chain',
+    href: 'https://pancakeswap.finance',
     icon: 'TwitterIcon',
   },
 ]

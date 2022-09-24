@@ -19,9 +19,10 @@ const rainbowAnimation = keyframes`
 `;
 
 const LinkLabel = styled.div<{ isPushed: boolean }>`
-  color: ${({ isPushed, theme }) => (isPushed ? theme.colors.textSubtle : "transparent")};
+  color: white;
   transition: color 0.4s;
   flex-grow: 1;
+  margin-left: 20px;
 `;
 
 const MenuEntry = styled.div<Props>`
@@ -29,12 +30,10 @@ const MenuEntry = styled.div<Props>`
   display: flex;
   align-items: center;
   height: ${MENU_ENTRY_HEIGHT}px;
-  padding: ${({ secondary }) => (secondary ? "0 32px" : "0 16px")};
-  font-size: ${({ secondary }) => (secondary ? "14px" : "16px")};
-  // background-color: ${({ secondary, theme }) => (secondary ? theme.colors.background : "transparent")};
+  padding: ${({ secondary }) => (secondary ? "0 32px" : "0 20px")};
+  font-size: ${({ secondary }) => (secondary ? "14px" : "30px")};
   background-color: ${({ secondary, theme }) => (secondary ? "#857e85" : "transparent")};
-  color: ${({ theme }) => theme.colors.textSubtle};
-  box-shadow: ${({ isActive, theme }) => (isActive ? `inset 4px 0px 0px ${theme.colors.primary}` : "none")};
+  color: white;
 
   a {
     display: flex;
@@ -44,11 +43,10 @@ const MenuEntry = styled.div<Props>`
   }
 
   svg {
-    fill: ${({ theme }) => theme.colors.textSubtle};
+    fill: white;
   }
 
   &:hover {
-    // background-color: ${({ theme }) => theme.colors.tertiary};
     background-color: #686668;
   }
 
