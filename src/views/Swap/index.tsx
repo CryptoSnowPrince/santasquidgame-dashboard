@@ -20,7 +20,6 @@ import { useIsTransactionUnsupported } from 'hooks/Trades'
 import UnsupportedCurrencyFooter from 'components/UnsupportedCurrencyFooter'
 import Footer from 'components/Menu/Footer'
 import { CommitButton } from 'components/CommitButton'
-import CardNav from 'components/CardNav'
 import { useRouter } from 'next/router'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useTranslation } from '@pancakeswap/localization'
@@ -460,7 +459,6 @@ export default function Swap() {
           <StyledSwapContainer $isChartExpanded={false}>
             {/* <StyledInputCurrencyWrapper mt={isChartExpanded ? '24px' : '0'}> */}
             <StyledInputCurrencyWrapper mt='0'>
-              <CardNav />
               <AppBody>
                 <CurrencyInputHeader
                   title={t('Swap')}

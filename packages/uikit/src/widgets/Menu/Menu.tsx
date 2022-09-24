@@ -153,7 +153,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
                   <CakePrice showSkeleton={false} cakePriceUsd={cakePriceUsd} />
                 </Box>
               )} */}
-              <Box mt="4px">
+              {/* <Box mt="4px">
                 <LangSelector
                   currentLang={currentLang}
                   langs={langs}
@@ -162,7 +162,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
                   color="textSubtle"
                   hideLanguage
                 />
-              </Box>
+              </Box> */}
               {rightSide}
             </Flex>
           </StyledNav>

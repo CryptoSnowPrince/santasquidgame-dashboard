@@ -17,7 +17,6 @@ import { logError } from 'utils/sentry'
 import { useIsTransactionUnsupported, useIsTransactionWarning } from 'hooks/Trades'
 import { useTranslation } from '@pancakeswap/localization'
 import UnsupportedCurrencyFooter from 'components/UnsupportedCurrencyFooter'
-import CardNav from 'components/CardNav'
 import { useZapContract } from 'hooks/useContract'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { getZapAddress } from 'utils/addressHelpers'
@@ -599,7 +598,6 @@ export default function AddLiquidity() {
 
   return (
     <Page>
-      <CardNav activeIndex={1} />
       <AppBody>
         {!showAddLiquidity && (
           <ChoosePair

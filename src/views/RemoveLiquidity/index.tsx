@@ -28,7 +28,6 @@ import useNativeCurrency from 'hooks/useNativeCurrency'
 import { getZapAddress } from 'utils/addressHelpers'
 import { ZapCheckbox } from 'components/CurrencyInputPanel/ZapCheckbox'
 import { CommitButton } from 'components/CommitButton'
-import CardNav from 'components/CardNav'
 import { useTranslation } from '@pancakeswap/localization'
 import { useLPApr } from 'state/swap/hooks'
 import { ROUTER_ADDRESS } from 'config/constants/exchange'
@@ -564,7 +563,6 @@ export default function RemoveLiquidity() {
 
   return (
     <Page>
-      <CardNav activeIndex={1} />
       <AppBody>
         <AppHeader
           backTo="/liquidity"

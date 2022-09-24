@@ -203,16 +203,6 @@ export const oldConfig: MenuEntry[] = [
     href: '/swap',
     icon: 'TradeIcon',
     initialOpenState: true,
-    items: [
-      {
-        label: 'Exchange',
-        href: '/swap',
-      },
-      {
-        label: 'Liquidity',
-        href: '/liquidity',
-      },
-    ],
   },
   {
     label: 'Staking',
