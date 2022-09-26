@@ -3,8 +3,8 @@ import { useWallet } from 'hooks/useWallet'
 // @ts-ignore
 // eslint-disable-next-line import/extensions
 import { useActiveHandle } from 'hooks/useEagerConnect.bmp.ts'
-import Trans from './Trans'
 import { StyledConnectButton } from "@pancakeswap/uikit/src/components/Button/StyledButton";
+import Trans from './Trans'
 
 const ConnectWalletButton = ({ children, ...props }: ButtonProps) => {
   const handleActive = useActiveHandle()

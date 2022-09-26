@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { AppHeader, AppBody } from '../../components/App'
-import Page from '../Page'
 import { Button, Input } from '@pancakeswap/uikit'
 import { StyledConnectButton } from '@pancakeswap/uikit/src/components/Button/StyledButton'
+import { AppHeader, AppBody } from '../../components/App'
+import Page from '../Page'
 
 const StyledContentButton = styled(StyledConnectButton)`
   padding: 10px 20px !important;
@@ -109,28 +109,28 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">APY:</div>
             <div className="vault-value">
-              {apy === '0' || Number.isNaN(apy) ? '--%' : `${displayFixedNumber(apy, 2)}%`}
+              {/* {apy === '0' || Number.isNaN(apy) ? '--%' : `${displayFixedNumber(apy, 2)}%`} */}
               4815
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Total BNB Claimed:</div>
             <div className="vault-value">
-              {/*{displayFixed(totalBNBClaimed, 2, 18)}*/}
+              {/* {displayFixed(totalBNBClaimed, 2, 18)} */}
               418591
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Total Staked:</div>
             <div className="vault-value">
-              {/*{displayFixed(totalStaked, 2, 9)}*/}
+              {/* {displayFixed(totalStaked, 2, 9)} */}
               45613
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Total Staked (USD):</div>
             <div className="vault-value">
-              {/*{`$ ${displayFixedNumber(totalStakedUSD, 2)}`}*/}
+              {/* {`$ ${displayFixedNumber(totalStakedUSD, 2)}`} */}
               489
             </div>
           </div>
@@ -142,7 +142,8 @@ export default function Staking() {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
               Your tokens:
-              {/*{balance}*/} 1561
+              {/* {balance} */}
+               1561
             </span>
             <span
               style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer' }}
@@ -156,12 +157,12 @@ export default function Staking() {
             // value={stakeInputValue}
             type="number"
             textAlign="left"
-            //onChange={onChangeStakeInputValue}
+            // onChange={onChangeStakeInputValue}
           />
           <StyledContentButton
           // onClick={() => (connected ? (isApproved ? onStake() : onApprove()) : connect())}
           >
-            {/*{connected ? (isApproved ? 'Stake' : 'Approve') : 'Connect Wallet'}*/}
+            {/* {connected ? (isApproved ? 'Stake' : 'Approve') : 'Connect Wallet'} */}
             Connect
           </StyledContentButton>
         </div>
@@ -172,35 +173,35 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">Your Staked:</div>
             <div className="vault-value">
-            {/*{stakedAmount}*/}
+            {/* {stakedAmount} */}
             5743753
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Stake (USD):</div>
             <div className="vault-value">
-             {/*{`$ ${displayFixedNumber(stakedUSD, 2)}`}*/}
+             {/* {`$ ${displayFixedNumber(stakedUSD, 2)}`} */}
             54612361
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Share:</div>
             <div className="vault-value">
-            {/*{`${displayFixedNumber(share, 2)}%`}*/}
+            {/* {`${displayFixedNumber(share, 2)}%`} */}
             436246
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Pending BNB Rewards:</div>
             <div className="vault-value">
-            {/*{`${displayFixedNumber(pendingReward, 6)}`}*/}
+            {/* {`${displayFixedNumber(pendingReward, 6)}`} */}
             6543
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Claimed BNB Rewards:</div>
             <div className="vault-value">
-            {/*{`${displayFixedNumber(claimedReward, 6)}`}*/}
+            {/* {`${displayFixedNumber(claimedReward, 6)}`} */}
             643264
             </div>
           </div>
@@ -211,7 +212,7 @@ export default function Staking() {
           </StyledContentButton>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
-            {/*{`Staked Tokens: ${stakedAmount}`}*/}
+            {/* {`Staked Tokens: ${stakedAmount}`} */}
             6543654
             </span>
             <span style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer' }} 

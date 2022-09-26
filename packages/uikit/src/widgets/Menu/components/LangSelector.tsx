@@ -28,7 +28,7 @@ const LangSelector: React.FC<Props> = ({ currentLang, langs, setLang }) => (
     {langs.map((lang) => (
       <MenuButton
         key={lang.code}
-        fullWidth
+        // fullWidth
         onClick={() => setLang(lang)}
         // Safari fix
         style={{ minHeight: "32px", height: "auto" }}
