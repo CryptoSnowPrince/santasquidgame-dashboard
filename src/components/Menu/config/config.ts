@@ -205,11 +205,6 @@ export const oldConfig: MenuEntry[] = [
     initialOpenState: true,
   },
   {
-    label: 'Liquidity',
-    href: '/liquidity',
-    icon: 'TradeIcon',
-  },
-  {
     label: 'Staking',
     href: '/staking',
     icon: 'StakingIcon',
