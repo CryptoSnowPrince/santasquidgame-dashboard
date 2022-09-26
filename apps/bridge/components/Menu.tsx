@@ -328,6 +328,7 @@ type TransferInput = {
   dstNativeAmount: CurrencyAmount<Token>
 }
 
+
 function User() {
   const wallet = useStargateReaction(() => window.stargate.wallet.ethereum)
   const [pending, setPending] = useState([])

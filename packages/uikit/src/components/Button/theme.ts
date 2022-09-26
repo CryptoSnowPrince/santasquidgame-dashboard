@@ -18,7 +18,6 @@ export const scaleVariants = {
 
 export const styleVariants = {
   [variants.PRIMARY]: {
-    backgroundColor: "primary",
     color: "white",
   },
   [variants.SECONDARY]: {
@@ -34,27 +33,33 @@ export const styleVariants = {
   [variants.TERTIARY]: {
     backgroundColor: "tertiary",
     boxShadow: "none",
+    border: "0px",
     color: "primary",
   },
   [variants.SUBTLE]: {
     backgroundColor: "textSubtle",
+    border: "0px",
     color: "backgroundAlt",
   },
   [variants.DANGER]: {
     backgroundColor: "failure",
+    border: "0px",
     color: "white",
   },
   [variants.SUCCESS]: {
     backgroundColor: "success",
+    border: "0px",
     color: "white",
   },
   [variants.TEXT]: {
     backgroundColor: "transparent",
+    border: "0px",
     color: "primary",
     boxShadow: "none",
   },
   [variants.LIGHT]: {
     backgroundColor: "input",
+    border: "0px",
     color: "textSubtle",
     boxShadow: "none",
   },

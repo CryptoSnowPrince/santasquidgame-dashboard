@@ -44,7 +44,11 @@ const FixedContainer = styled.div<{ showMenu: boolean; height: number }>`
   transition: top 0.2s;
   height: ${({ height }) => `${height}px`};
   width: 100%;
-  z-index: 20;
+  z-index: 10;
+
+  @media screen and (max-width: 1080px) {
+    z-index: 20;
+  }
 `;
 
 const TopBannerContainer = styled.div<{ height: number }>`
@@ -98,34 +102,41 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
 
   const totalTopMenuHeight = banner ? MENU_HEIGHT + topBannerHeight : MENU_HEIGHT;
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const currentOffset = window.pageYOffset;
-  //     const isBottomOfPage = window.document.body.clientHeight === currentOffset + window.innerHeight;
-  //     const isTopOfPage = currentOffset === 0;
-  //     // Always show the menu when user reach the top
-  //     if (isTopOfPage) {
-  //       setShowMenu(true);
-  //     }
-  //     // Avoid triggering anything at the bottom because of layout shift
-  //     else if (!isBottomOfPage) {
-  //       if (currentOffset < refPrevOffset.current || currentOffset <= totalTopMenuHeight) {
-  //         // Has scroll up
-  //         setShowMenu(true);
-  //       } else {
-  //         // Has scroll down
-  //         setShowMenu(false);
-  //       }
-  //     }
-  //     refPrevOffset.current = currentOffset;
-  //   };
-  //   const throttledHandleScroll = throttle(handleScroll, 200);
+  useEffect(() => {
+    if (window.document.body.clientWidth < 1080 && isPushed) {
+      setIsPushed(false);
+    }
+    else {
+      setIsPushed(!isMobile);
+    }
 
-  //   window.addEventListener("scroll", throttledHandleScroll);
-  //   return () => {
-  //     window.removeEventListener("scroll", throttledHandleScroll);
-  //   };
-  // }, [totalTopMenuHeight]);
+    const handleScroll = () => {
+      const currentOffset = window.pageYOffset;
+      const isBottomOfPage = window.document.body.clientHeight === currentOffset + window.innerHeight;
+      const isTopOfPage = currentOffset === 0;
+      // Always show the menu when user reach the top
+      if (isTopOfPage) {
+        setShowMenu(true);
+      }
+      // Avoid triggering anything at the bottom because of layout shift
+      else if (!isBottomOfPage) {
+        if (currentOffset < refPrevOffset.current || currentOffset <= totalTopMenuHeight) {
+          // Has scroll up
+          setShowMenu(true);
+        } else {
+          // Has scroll down
+          setShowMenu(false);
+        }
+      }
+      refPrevOffset.current = currentOffset;
+    };
+    const throttledHandleScroll = throttle(handleScroll, 200);
+
+    window.addEventListener("scroll", throttledHandleScroll);
+    return () => {
+      window.removeEventListener("scroll", throttledHandleScroll);
+    };
+  }, [totalTopMenuHeight, window.document.body.clientWidth]);
 
   // Find the home link if provided
   const homeLink = links.find((link) => link.label === "Home");

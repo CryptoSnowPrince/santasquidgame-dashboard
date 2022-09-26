@@ -211,7 +211,7 @@ export const oldConfig: MenuEntry[] = [
   },
   {
     label: 'Staking',
-    href: 'https://poochain-fork-2022.web.app/',
+    href: '/staking',
     icon: 'StakingIcon',
   },
   {

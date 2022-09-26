@@ -110,6 +110,9 @@ const ResetCSS = createGlobalStyle`
     background: transparent; 
     border-color: transparent;
     color: transparent;
+  }
+  body {
+    background-color: #7b2d21 !important;
   }  
 `;
 

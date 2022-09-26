@@ -21,6 +21,8 @@ const rainbowAnimation = keyframes`
 const LinkLabel = styled.div<{ isPushed: boolean }>`
   color: white;
   transition: color 0.4s;
+  font-size: 16px;
+  font-weight: 400;
   flex-grow: 1;
   margin-left: 20px;
 `;
@@ -34,6 +36,7 @@ const MenuEntry = styled.div<Props>`
   font-size: ${({ secondary }) => (secondary ? "14px" : "30px")};
   background-color: ${({ secondary, theme }) => (secondary ? "#857e85" : "transparent")};
   color: white;
+  opacity: 0.7;
 
   a {
     display: flex;
@@ -47,7 +50,7 @@ const MenuEntry = styled.div<Props>`
   }
 
   &:hover {
-    background-color: #686668;
+    box-shadow: 0 0 10px 0 rgb(0 68 255 / 50%);
   }
 
   // Safari fix
