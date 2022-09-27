@@ -119,7 +119,7 @@ const StyledInput = styled(Input) <{ textAlign?: string }>`
 `
 
 export default function Staking() {
-  const [isOpen, setOpen] = useState(false);
+  // const [isOpen, setOpen] = useState(false);
   const { account, chainId } = useActiveWeb3React()
   const tokenContract = useCustomTokenContract();
   const stakingContract = useCustomStakingContract();
