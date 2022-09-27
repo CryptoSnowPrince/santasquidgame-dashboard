@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Button, Input } from '@pancakeswap/uikit'
+import { Button, Input, useToast } from '@pancakeswap/uikit'
 import { StyledConnectButton } from '@pancakeswap/uikit/src/components/Button/StyledButton'
 import { ethers } from 'ethers'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
@@ -142,6 +142,8 @@ export default function Staking() {
   const [claimedReward, setClaimedReward] = useState("0");
   const [unstakeInputValue, setUnStakeInputValue] = useState('0');
 
+  const { toastError, toastSuccess } = useToast()
+
   const [isUpdating, setIsUpdating] = useState(false);
   let timerId: NodeJS.Timeout;
 
@@ -169,6 +171,7 @@ export default function Staking() {
     const { success: tokenSuccess, tokenPrice: _tokenPrice } = await getTokenPrice(chainId);
     if (!(bnbSuccess && tokenSuccess)) {
       // showToast("Please check your network status!", "error");
+      toastError('Error', 'Please check your network status!')
       return;
     }
     setBNBPrice(_bnbPrice);
@@ -258,11 +261,17 @@ export default function Staking() {
     if (stakingContract && account) {
       if (!(parseInt(stakeInputValue) <= parseInt(balance))) {
         // showToast("Input stake amount correctly!", "error");
+        toastError('Error', 'Input stake amount correctly!')
         return;
       }
       const res = await stake(stakingContract, account, stakeInputValue);
       // console.log("stake res=", res);
       // showToast(res.message, res.success ? "success" : "error");
+      if(res.success) {
+        toastSuccess('Success', res.message)
+      } else {
+        toastError('Error', res.message)
+      }
     }
   }
 
@@ -271,6 +280,11 @@ export default function Staking() {
       const res = await tokenApprove(tokenContract, account, chainId);
       // console.log("approve res=", res);
       // showToast(res.message, res.success ? "success" : "error");
+      if(res.success) {
+        toastSuccess('Success', res.message)
+      } else {
+        toastError('Error', res.message)
+      }
     }
   }
 
@@ -287,6 +301,11 @@ export default function Staking() {
     if (stakingContract && account) {
       const res = await claimRewards(stakingContract, account);
       // showToast(res.message, res.success ? "success" : "error");
+      if(res.success) {
+        toastSuccess('Success', res.message)
+      } else {
+        toastError('Error', res.message)
+      }
     }
   }
 
@@ -294,10 +313,16 @@ export default function Staking() {
     if (stakingContract && account) {
       if (!(parseInt(unstakeInputValue) <= parseInt(stakedAmount))) {
         // showToast("Input unstake amount correctly!", "error");
+        toastError('Error', 'Input unstake amount correctly!')
         return;
       }
       const res = await withdraw(stakingContract, account, unstakeInputValue);
       // showToast(res.message, res.success ? "success" : "error");
+      if(res.success) {
+        toastSuccess('Success', res.message)
+      } else {
+        toastError('Error', res.message)
+      }
     }
   }
 
