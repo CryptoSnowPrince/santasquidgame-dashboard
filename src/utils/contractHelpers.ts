@@ -1,5 +1,6 @@
 import type { Signer } from '@ethersproject/abstract-signer'
 import type { Provider } from '@ethersproject/providers'
+import { ethers } from 'ethers'
 import { provider } from 'utils/wagmi'
 import { Contract } from '@ethersproject/contracts'
 import poolsConfig from 'config/constants/pools'
@@ -41,6 +42,7 @@ import {
   getPredictionsV1Address,
   getBCakeFarmBoosterAddress,
   getBCakeFarmBoosterProxyFactoryAddress,
+  getStakingAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -92,6 +94,8 @@ import cakePredictionsAbi from 'config/abi/cakePredictions.json'
 import bCakeFarmBoosterAbi from 'config/abi/bCakeFarmBooster.json'
 import bCakeFarmBoosterProxyFactoryAbi from 'config/abi/bCakeFarmBoosterProxyFactory.json'
 import bCakeProxyAbi from 'config/abi/bCakeProxy.json'
+import stakingAbi from 'config/abi/staking.json'
+import tokenAbi from 'config/abi/token.json'
 
 // Types
 import type {
@@ -139,6 +143,8 @@ import type {
   BCakeFarmBooster,
   BCakeFarmBoosterProxyFactory,
   BCakeProxy,
+  Staking,
+  Token,
 } from 'config/abi/types'
 import { ChainId } from '@pancakeswap/sdk'
 
@@ -361,4 +367,133 @@ export const getBCakeFarmBoosterProxyFactoryContract = (signer?: Signer | Provid
 
 export const getBCakeProxyContract = (proxyContractAddress: string, signer?: Signer | Provider) => {
   return getContract({ abi: bCakeProxyAbi, address: proxyContractAddress, signer }) as BCakeProxy
+}
+
+export const getStakingContract = (stakingContractAddress: string, signer?: Signer | Provider) => {
+  return getContract({ abi: stakingAbi, address: stakingContractAddress, signer }) as Staking
+}
+
+export const getTokenContract = (tokenContractAddress: string, signer?: Signer | Provider) => {
+  return getContract({ abi: tokenAbi, address: tokenContractAddress, signer }) as Token
+}
+
+// Token Contract
+export const getTokenBalance = async (_tokenContract: Token, account: string) => {
+  const res = await _tokenContract.balanceOf(account);
+  return res;
+}
+
+export const getAllowance = async (_tokenContract: Token, addr1: string, addr2: string) => {
+  const res = await _tokenContract.allowance(addr1, addr2);
+  return res;
+}
+
+export const tokenApprove = async (_tokenContract: Token, account: string, chainId: number) => {
+  try {
+    const approveTx = await _tokenContract.approve(getStakingAddress(chainId), "1000000000000000000000000000000000000000000000", { from: account });
+    // console.log("stake approveTx=", approveTx);
+    return {
+      success: true,
+      message: "Successfully approved!"
+    }
+  } catch (err) {
+    // console.log("approve error=", err)
+    return {
+      success: false,
+      // message: err.message
+      message: "tokenApprove error"
+    }
+  }
+}
+
+// Staking Contract
+export const getTotalStaked = async (_stakingContract: Staking) => {
+  const res = await _stakingContract.totalStaked()
+  return res;
+}
+
+export const getTotalBNBClaimedRewards = async (_stakingContract: Staking) => {
+  const res = await _stakingContract.totalBNBClaimedRewards();
+  return res;
+}
+
+export const getUserInfo = async (_stakingContract: Staking, addr: string) => {
+  const res = await _stakingContract.userInfo(addr);
+  return {
+    amount: res[0],
+    rewardDebt: res[1]
+  };
+}
+
+export const getPendingReward = async (_stakingContract: Staking, addr: string) => {
+  const res = await _stakingContract.pendingReward(addr);
+  return res;
+}
+
+export const getClaimedReward = async (_stakingContract: Staking, addr: string) => {
+  const res = await _stakingContract.viewWalletClaimed(addr);
+  return res;
+}
+
+export const getRewardPerBlock = async (_stakingContract: Staking) => {
+  const res = await _stakingContract.rewardPerBlock();
+  return res;
+}
+
+export const TOKEN_DECIMALS = 9
+
+export const stake = async (_stakingContract: Staking, addr: string, amount: string) => {
+  try {
+    const stakeAmount = ethers.utils.parseUnits(amount, TOKEN_DECIMALS);
+    const depositTx = await _stakingContract.deposit(stakeAmount, {
+      from: addr
+    });
+    // console.log("stake depositTx=", depositTx);
+    return {
+      success: true,
+      message: "Successfully deposited!"
+    }
+  } catch (err) {
+    // console.log("stake error = ", err);
+    return {
+      success: false,
+      // message: err.message
+      message: "deposit err"
+    }
+  }
+}
+
+export const withdraw = async (_stakingContract: Staking, account: string, amount: string) => {
+  try {
+    const unstakeAmount = ethers.utils.parseUnits(amount, TOKEN_DECIMALS);
+    await _stakingContract.withdraw(unstakeAmount, {
+      from: account
+    });
+    return {
+      success: true,
+      message: "Successfully unstaked!"
+    }
+  } catch (err) {
+    return {
+      success: false,
+      // message: err.message
+      message: "err unstaked!"
+    }
+  }
+}
+
+export const claimRewards = async (_stakingContract: Staking, account: string) => {
+  try {
+    await _stakingContract.claimRewards({ from: account });
+    return {
+      success: true,
+      message: "Successfully claimed!"
+    }
+  } catch (err) {
+    return {
+      success: false,
+      // message: err.message 
+      message: "err claimed!"
+    }
+  }
 }

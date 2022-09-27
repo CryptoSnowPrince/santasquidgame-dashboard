@@ -13,7 +13,7 @@ import zapAbi from 'config/abi/zap.json'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useProviderOrSigner } from 'hooks/useProviderOrSigner'
 import { useMemo } from 'react'
-import { getMulticallAddress, getPredictionsV1Address, getZapAddress } from 'utils/addressHelpers'
+import { getMulticallAddress, getPredictionsV1Address, getTokenAddress, getStakingAddress, getZapAddress } from 'utils/addressHelpers'
 import {
   getAnniversaryAchievementContract,
   getBCakeFarmBoosterContract,
@@ -53,6 +53,8 @@ import {
   getPredictionsV1Contract,
   getProfileContract,
   getSouschefContract,
+  getStakingContract,
+  getTokenContract,
   getTradingCompetitionContractEaster,
   getTradingCompetitionContractFanToken,
   getTradingCompetitionContractMobox,
@@ -361,5 +363,23 @@ export function useBCakeProxyContract(proxyContractAddress: string, withSignerIf
   return useMemo(
     () => proxyContractAddress && getBCakeProxyContract(proxyContractAddress, providerOrSigner),
     [providerOrSigner, proxyContractAddress],
+  )
+}
+
+export function useCustomStakingContract(withSignerIfPossible = true) {
+  const { chainId } = useActiveWeb3React()
+  const providerOrSigner = useProviderOrSigner(withSignerIfPossible)
+  return useMemo(
+    () => getStakingContract(getStakingAddress(chainId), providerOrSigner),
+    [providerOrSigner],
+  )
+}
+
+export function useCustomTokenContract(withSignerIfPossible = true) {
+  const { chainId } = useActiveWeb3React()
+  const providerOrSigner = useProviderOrSigner(withSignerIfPossible)
+  return useMemo(
+    () => getTokenContract(getTokenAddress(chainId), providerOrSigner),
+    [providerOrSigner],
   )
 }

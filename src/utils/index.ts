@@ -4,12 +4,14 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { AddressZero } from '@ethersproject/constants'
 import { Contract } from '@ethersproject/contracts'
 import type { Provider } from '@ethersproject/providers'
+import { ethers } from 'ethers';
 import { ChainId, Currency } from '@pancakeswap/sdk'
 import { bsc } from '@pancakeswap/wagmi/chains'
 import memoize from 'lodash/memoize'
 import { TokenAddressMap } from '@pancakeswap/tokens'
 import { BASE_BSC_SCAN_URLS } from '../config'
 import { chains } from './wagmi'
+import { getTokenAddress } from './addressHelpers'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export const isAddress = memoize((value: any): string | false => {
@@ -79,4 +81,56 @@ export function escapeRegExp(string: string): string {
 export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currency): boolean {
   if (currency?.isNative) return true
   return Boolean(currency?.isToken && defaultTokens[currency.chainId]?.[currency.address])
+}
+
+export const displayEther = (price) => {
+  return ethers.utils.formatEther(price);
+}
+
+export const displayUnits = (price, number) => {
+  return ethers.utils.formatUnits(price, number);
+}
+
+export const displayFixed = (value, fixed, number = 9) => {
+  return Number(displayUnits(value, number)).toFixed(fixed);
+}
+
+export const displayFixedNumber = (value, fixed = 0) => {
+  return Number(value).toFixed(fixed);
+}
+
+export const getBNBPrice = async () => {
+  try {
+    const apiUrl = `https://api.dexscreener.io/latest/dex/tokens/0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c`;
+    const resVal = await fetch(apiUrl).then(res => res.json())
+    return {
+      success: true,
+      bnbPrice: resVal.pairs[0].priceUsd
+    }
+  } catch (err) {
+    // console.log("err = ", err);
+    return {
+      success: false,
+      // message: err.message
+      message: err
+    }
+  }
+}
+
+export const getTokenPrice = async (chainId: number) => {
+  try {
+    const apiUrl = `https://api.dexscreener.io/latest/dex/tokens/${getTokenAddress(chainId)}`;
+    const resVal = await fetch(apiUrl).then(res => res.json())
+    return {
+      success: true,
+      tokenPrice: resVal.pairs[0].priceUsd
+    }
+  } catch (err) {
+    // console.log("err = ", err);
+    return {
+      success: false,
+      // message: err.message
+      message: err
+    }
+  }
 }

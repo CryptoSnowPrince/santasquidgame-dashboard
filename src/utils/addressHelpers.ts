@@ -120,3 +120,11 @@ export const getBCakeFarmBoosterAddress = () => {
 export const getBCakeFarmBoosterProxyFactoryAddress = () => {
   return getAddress(addresses.bCakeFarmBoosterProxyFactory)
 }
+
+export const getStakingAddress = (chainId: number) => {
+  return getAddress(addresses.staking, chainId)
+}
+
+export const getTokenAddress = (chainId: number) => {
+  return getAddress(addresses.token, chainId)
+}

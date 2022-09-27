@@ -2,6 +2,27 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Button, Input } from '@pancakeswap/uikit'
 import { StyledConnectButton } from '@pancakeswap/uikit/src/components/Button/StyledButton'
+import { ethers } from 'ethers'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useCustomTokenContract, useCustomStakingContract } from 'hooks/useContract'
+import { getStakingAddress } from 'utils/addressHelpers'
+import {
+  claimRewards,
+  getAllowance,
+  getClaimedReward,
+  getPendingReward,
+  getRewardPerBlock,
+  getTokenBalance,
+  getTotalBNBClaimedRewards,
+  getTotalStaked,
+  getUserInfo,
+  stake,
+  tokenApprove,
+  TOKEN_DECIMALS,
+  withdraw
+} from 'utils/contractHelpers';
+import { displayEther, displayFixed, displayFixedNumber, displayUnits, getBNBPrice, getTokenPrice } from '../../utils'
+import ConnectWalletButton from '../../components/ConnectWalletButton'
 import { AppHeader, AppBody } from '../../components/App'
 import Page from '../Page'
 
@@ -70,7 +91,7 @@ const StyledContentContainer = styled.div`
 }
 `
 
-const StyledInput = styled(Input)<{ textAlign?: string}>`
+const StyledInput = styled(Input) <{ textAlign?: string }>`
   --border-opacity: 1;
   border-color: rgb(167, 70, 61);
   border-width: 3px;
@@ -98,7 +119,187 @@ const StyledInput = styled(Input)<{ textAlign?: string}>`
 `
 
 export default function Staking() {
-  const [apy, setAPY] = useState('0')
+  const [isOpen, setOpen] = useState(false);
+  const { account, chainId } = useActiveWeb3React()
+  const tokenContract = useCustomTokenContract();
+  const stakingContract = useCustomStakingContract();
+
+  const [bnbPriceUSD, setBNBPrice] = useState("0");
+  const [tokenPriceUSD, setTokenPrice] = useState("0");
+
+  const [apy, setAPY] = useState("0");
+  const [totalBNBClaimed, setTotalBNBClaimed] = useState("0");
+  const [totalStaked, setTotalStaked] = useState("0");
+  const [totalStakedUSD, setTotalStakedUSD] = useState("0");
+  const [balance, setBalance] = useState("0");
+  const [stakeInputValue, setStakeInputValue] = useState('0');
+  const [isApproved, setIsApproved] = useState(false);
+
+  const [stakedAmount, setStakedAmount] = useState("0");
+  const [stakedUSD, setStakedUSD] = useState("0");
+  const [share, setShare] = useState("0");
+  const [pendingReward, setPendingReward] = useState("0");
+  const [claimedReward, setClaimedReward] = useState("0");
+  const [unstakeInputValue, setUnStakeInputValue] = useState('0');
+
+  const [isUpdating, setIsUpdating] = useState(false);
+  let timerId: NodeJS.Timeout;
+
+  useEffect(() => {
+    getPriceInfo();
+  }, [])
+
+  useEffect(() => {
+    if (tokenContract && stakingContract)
+      updateParameters();
+
+    timerId = setInterval(() => {
+      if (tokenContract && stakingContract && account) {
+        updateParameters();
+      }
+    }, 10000);
+    console.log("timerId = ", timerId)
+    return () => {
+      clearInterval(timerId)
+    }
+  }, [tokenContract, stakingContract, account, bnbPriceUSD, tokenPriceUSD]);
+
+  const getPriceInfo = async () => {
+    const { success: bnbSuccess, bnbPrice: _bnbPrice } = await getBNBPrice();
+    const { success: tokenSuccess, tokenPrice: _tokenPrice } = await getTokenPrice(chainId);
+    if (!(bnbSuccess && tokenSuccess)) {
+      // showToast("Please check your network status!", "error");
+      return;
+    }
+    setBNBPrice(_bnbPrice);
+    setTokenPrice(_tokenPrice);
+  }
+
+  const updateParameters = async () => {
+    console.log("updateParameters isUpdating=", isUpdating);
+    try {
+      // get Pool info first
+      // const [ bnbPrice, setBNBPrice ] = useState(0);
+      // const [ tokenPrice, setTokenPrice ] = useState(0);
+      setIsUpdating(true);
+      const resTotalBNBClaimed = await getTotalBNBClaimedRewards(stakingContract);
+      setTotalBNBClaimed(resTotalBNBClaimed.toString());
+      const resTotalStaked = await getTotalStaked(stakingContract);
+      setTotalStaked(resTotalStaked.toString());
+      if (bnbPriceUSD === "0" && tokenPriceUSD === "0") {
+        // showToast("Please check your network status!", "error");
+        getPriceInfo();
+        return;
+      }
+
+      const _totalStakedUSD = parseFloat(displayUnits(resTotalStaked, 9)) * parseFloat(tokenPriceUSD);
+      setTotalStakedUSD(_totalStakedUSD.toString());
+
+      // const [ apy, setAPY ] = useState("0");
+      const resRewardPerBlock = await getRewardPerBlock(stakingContract);
+      const _perBlock = parseFloat(displayEther(resRewardPerBlock));
+      const rewardPerYear = _perBlock * 28800 * 365;
+      const rewardPerYearUSD = rewardPerYear * parseFloat(bnbPriceUSD);
+      const _apy = rewardPerYearUSD / _totalStakedUSD * 100;
+      setAPY(_apy.toString());
+
+      if (!account) {
+        setAPY("0");
+        setBalance("0");
+        setStakedAmount("0");
+        setStakedUSD("0");
+        setShare("0");
+        setPendingReward("0");
+        setClaimedReward("0");
+        return;
+      }
+      const resBal = await getTokenBalance(tokenContract, account);
+      const _bal = displayFixed(resBal, 0);
+      setBalance(_bal);
+
+      const _allowance = await getAllowance(tokenContract, account, getStakingAddress(chainId));
+      if (_allowance.lt(ethers.utils.parseUnits(stakeInputValue, TOKEN_DECIMALS)))
+        setIsApproved(false);
+      else
+        setIsApproved(true);
+
+      const resUserInfo = await getUserInfo(stakingContract, account);
+      const _stakedBal = displayFixed(resUserInfo.amount, 0);
+      setStakedAmount(_stakedBal);
+
+      // const [ stakedUSD, setStakedUSD ] = useState("0");
+      // const [ share, setShare ] = useState("0");
+      const _stakedUSD = parseFloat(stakedAmount) * parseFloat(tokenPriceUSD);
+      setStakedUSD(_stakedUSD.toString());
+      const _share = parseFloat(_stakedBal) / parseFloat(resTotalStaked.toString());
+      setShare(_share.toString());
+      console.log("_share", _share);
+
+      const resPendingReward = await getPendingReward(stakingContract, account);
+      setPendingReward(displayEther(resPendingReward));
+      const resClaimedReward = await getClaimedReward(stakingContract, account);
+      setClaimedReward(displayEther(resClaimedReward));
+    } catch (err) {
+      console.log("error = ", err)
+    }
+    setIsUpdating(false);
+  }
+
+  const onClickStakeMax = () => {
+    setStakeInputValue(balance);
+  }
+
+  const onChangeStakeInputValue = (e) => {
+    e.preventDefault();
+    setStakeInputValue(e.target.value);
+  }
+
+  const onStake = async () => {
+    if (stakingContract && account) {
+      if (!(parseInt(stakeInputValue) <= parseInt(balance))) {
+        // showToast("Input stake amount correctly!", "error");
+        return;
+      }
+      const res = await stake(stakingContract, account, stakeInputValue);
+      // console.log("stake res=", res);
+      // showToast(res.message, res.success ? "success" : "error");
+    }
+  }
+
+  const onApprove = async () => {
+    if (tokenContract && account) {
+      const res = await tokenApprove(tokenContract, account, chainId);
+      // console.log("approve res=", res);
+      // showToast(res.message, res.success ? "success" : "error");
+    }
+  }
+
+  const onClickUnStakeMax = () => {
+    setUnStakeInputValue(stakedAmount);
+  }
+
+  const onChangeUnStakeInputValue = (e) => {
+    e.preventDefault();
+    setUnStakeInputValue(e.target.value);
+  }
+
+  const onClaimRewards = async () => {
+    if (stakingContract && account) {
+      const res = await claimRewards(stakingContract, account);
+      // showToast(res.message, res.success ? "success" : "error");
+    }
+  }
+
+  const onUnstake = async () => {
+    if (stakingContract && account) {
+      if (!(parseInt(unstakeInputValue) <= parseInt(stakedAmount))) {
+        // showToast("Input unstake amount correctly!", "error");
+        return;
+      }
+      const res = await withdraw(stakingContract, account, unstakeInputValue);
+      // showToast(res.message, res.success ? "success" : "error");
+    }
+  }
 
   return (
     <>
@@ -109,29 +310,25 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">APY:</div>
             <div className="vault-value">
-              {/* {apy === '0' || Number.isNaN(apy) ? '--%' : `${displayFixedNumber(apy, 2)}%`} */}
-              4815
+              {apy === '0' || Number.isNaN(apy) ? '--%' : `${displayFixedNumber(apy, 2)}%`}
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Total BNB Claimed:</div>
             <div className="vault-value">
-              {/* {displayFixed(totalBNBClaimed, 2, 18)} */}
-              418591
+              {displayFixed(totalBNBClaimed, 2, 18)}
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Total Staked:</div>
             <div className="vault-value">
-              {/* {displayFixed(totalStaked, 2, 9)} */}
-              45613
+              {displayFixed(totalStaked, 2, 9)}
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Total Staked (USD):</div>
             <div className="vault-value">
-              {/* {`$ ${displayFixedNumber(totalStakedUSD, 2)}`} */}
-              489
+              {`$ ${displayFixedNumber(totalStakedUSD, 2)}`}
             </div>
           </div>
         </div>
@@ -142,29 +339,31 @@ export default function Staking() {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
               Your tokens:
-              {/* {balance} */}
-               1561
+              {balance}
             </span>
-            <span
-              style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer' }}
-              // onClick={onClickStakeMax}
+            <button type='button'
+              style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer', border: 0, padding: 0, background: "transparent" }}
+              onClick={onClickStakeMax}
             >
               Max
-            </span>
+            </button>
           </div>
           <StyledInput
             placeholder="0"
-            // value={stakeInputValue}
+            value={stakeInputValue}
             type="number"
             textAlign="left"
-            // onChange={onChangeStakeInputValue}
+            onChange={onChangeStakeInputValue}
           />
-          <StyledContentButton
-          // onClick={() => (connected ? (isApproved ? onStake() : onApprove()) : connect())}
-          >
-            {/* {connected ? (isApproved ? 'Stake' : 'Approve') : 'Connect Wallet'} */}
-            Connect
-          </StyledContentButton>
+          {account ? (
+            <StyledContentButton
+              onClick={() => (isApproved ? onStake() : onApprove())}
+            >
+              {(isApproved ? 'Stake' : 'Approve')}
+            </StyledContentButton>
+          ) : (
+            <ConnectWalletButton />
+          )}
         </div>
       </StyledContentContainer>
       <StyledContentContainer style={{ margin: '50px 20px 20px' }}>
@@ -173,65 +372,64 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">Your Staked:</div>
             <div className="vault-value">
-            {/* {stakedAmount} */}
-            5743753
+              {stakedAmount}
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Stake (USD):</div>
             <div className="vault-value">
-             {/* {`$ ${displayFixedNumber(stakedUSD, 2)}`} */}
-            54612361
+              {`$ ${displayFixedNumber(stakedUSD, 2)}`}
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Share:</div>
             <div className="vault-value">
-            {/* {`${displayFixedNumber(share, 2)}%`} */}
-            436246
+              {`${displayFixedNumber(share, 2)}%`}
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Pending BNB Rewards:</div>
             <div className="vault-value">
-            {/* {`${displayFixedNumber(pendingReward, 6)}`} */}
-            6543
+              {`${displayFixedNumber(pendingReward, 6)}`}
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Claimed BNB Rewards:</div>
             <div className="vault-value">
-            {/* {`${displayFixedNumber(claimedReward, 6)}`} */}
-            643264
+              {`${displayFixedNumber(claimedReward, 6)}`}
             </div>
           </div>
-          <StyledContentButton style={{ padding: '11px 22px', fontSize: '16px' }} 
-          // onClick={onClaimRewards}
+          <StyledContentButton style={{ padding: '11px 22px', fontSize: '16px' }}
+            onClick={onClaimRewards}
           >
             CLAIM EARNINGS
           </StyledContentButton>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
-            {/* {`Staked Tokens: ${stakedAmount}`} */}
-            6543654
+              {`Staked Tokens: ${stakedAmount}`}
             </span>
-            <span style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer' }} 
-            // onClick={onClickUnStakeMax}
+            <button type='button'
+              style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer', border: 0, padding: 0, background: "transparent" }}
+              onClick={onClickUnStakeMax}
             >
               Max
-            </span>
+            </button>
           </div>
-          <StyledInput placeholder="0" 
-          // value={unstakeInputValue}
-           type="number"
-           // onChange={onChangeUnStakeInputValue} 
-           />
+          <StyledInput placeholder="0"
+            value={unstakeInputValue}
+            type="number"
+            onChange={onChangeUnStakeInputValue}
+          />
 
-          <StyledContentButton style={{ padding: '11px 22px', fontSize: '16px' }} 
-          // onClick={onUnstake}
-          >
-            UNSTAKE
-          </StyledContentButton>
+          {account ? (
+            <StyledContentButton style={{ padding: '11px 22px', fontSize: '16px' }}
+              onClick={onUnstake}
+            >
+              UNSTAKE
+            </StyledContentButton>
+          ) : (
+            <ConnectWalletButton />
+          )}
           <p className="fee-title" style={{ marginTop: '1rem' }}>
             This application is decentralized and is provided with no guarantees or warranties of any kind.
           </p>
