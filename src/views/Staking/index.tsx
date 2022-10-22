@@ -22,6 +22,7 @@ import {
   withdraw
 } from 'utils/contractHelpers';
 import { displayEther, displayFixed, displayFixedNumber, displayUnits, getBNBPrice, getTokenPrice } from '../../utils'
+import { isAddress } from 'utils'
 import ConnectWalletButton from '../../components/ConnectWalletButton'
 import { CopyButton } from 'components/CopyButton'
 import { AppHeader, AppBody } from '../../components/App'
@@ -174,10 +175,29 @@ const StyledReferral = styled(Input) <{ textAlign?: string }>`
 
 export const PUBLIC_URL = "https://poochain-swap-fork.web.app"
 export const REF_PREFIX = `${PUBLIC_URL}/?ref=`
+export const ADMIN_ACCOUNT = '0x2Cc4467e7a94D55497B704a0acd90ACd1BF9A5af'
 
 export default function Staking() {
   // const [isOpen, setOpen] = useState(false);
   const { account, chainId } = useActiveWeb3React()
+
+  const queryString = window.location.search;
+  const parameters = new URLSearchParams(queryString);
+  const newReferral = parameters.get('ref');
+
+  useEffect(() => {
+    const referral = window.localStorage.getItem("REFERRAL")
+
+    if (!isAddress(referral)) {
+      if (isAddress(newReferral)) {
+        window.localStorage.setItem("REFERRAL", newReferral);
+      } else {
+        window.localStorage.setItem("REFERRAL", ADMIN_ACCOUNT);
+      }
+    }
+    console.log("[PRINCE](referral): ", referral);
+  }, [newReferral])
+
   const tokenContract = useCustomTokenContract();
   const stakingContract = useCustomStakingContract();
 
@@ -404,12 +424,6 @@ export default function Staking() {
             <div className="vault-title">APY:</div>
             <div className="vault-value">
               {apy === '0' || Number.isNaN(apy) ? '--%' : `${displayFixedNumber(apy, 2)}%`}
-            </div>
-          </div>
-          <div className="vault-info">
-            <div className="vault-title">Total BNB Claimed:</div>
-            <div className="vault-value">
-              {displayFixed(totalBNBClaimed, 2, 18)}
             </div>
           </div>
           <div className="vault-info">
