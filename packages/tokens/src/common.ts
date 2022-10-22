@@ -2,20 +2,20 @@ import { ChainId, Token } from '@pancakeswap/sdk'
 
 export const CAKE_MAINNET = new Token(
   ChainId.BSC,
-  '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82',
-  18,
-  'CAKE',
-  'PancakeSwap Token',
-  'https://pancakeswap.finance/',
+  '0xA9978393C52bc79b6E9579270Ce8C9cFCBd5B07B',
+  9,
+  'SSG',
+  'SantaSquidGame',
+  'https://poochain-swap-fork.web.app/',
 )
 
 export const CAKE_TESTNET = new Token(
   ChainId.BSC_TESTNET,
-  '0xFa60D973F7642B748046464e165A65B7323b0DEE',
-  18,
-  'CAKE',
-  'PancakeSwap Token',
-  'https://pancakeswap.finance/',
+  '0x5d750D2a56417b9F555c529818e0BF56B50962d9',
+  9,
+  'SSG',
+  'SantaSquidGame',
+  'https://poochain-swap-fork.web.app/',
 )
 
 export const USDC_BSC = new Token(

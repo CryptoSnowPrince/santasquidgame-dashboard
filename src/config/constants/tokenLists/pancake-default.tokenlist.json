@@ -51,12 +51,12 @@
       "logoURI": "https://pancakeswap.finance/images/tokens/0x55d398326f99059fF775485246999027B3197955.png"
     },
     {
-      "name": "PancakeSwap Token",
-      "symbol": "CAKE",
-      "address": "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
+      "name": "SantaSquidGame",
+      "symbol": "SSG",
+      "address": "0xA9978393C52bc79b6E9579270Ce8C9cFCBd5B07B",
       "chainId": 56,
-      "decimals": 18,
-      "logoURI": "https://pancakeswap.finance/images/tokens/0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82.png"
+      "decimals": 9,
+      "logoURI": "https://poochain-swap-fork.web.app/images/tokens/0xA9978393C52bc79b6E9579270Ce8C9cFCBd5B07B.png"
     },
     {
       "name": "Venus",

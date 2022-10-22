@@ -561,6 +561,7 @@ export default function Staking() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', position: "relative", marginTop: '10px', marginBottom: '20px' }}>
             <StyledReferral
+              readOnly
               value={refLink}
               onClick={() => {
                 if (navigator.clipboard) {
@@ -568,7 +569,7 @@ export default function Staking() {
                 }
               }}
             />
-            <CopyButton width="30px" text={refLink} tooltipMessage='Copied' tooltipTop={-30} tooltipRight={-20} />
+            <CopyButton width="30px" text={refLink} tooltipMessage='Copied!' tooltipTop={-30} tooltipRight={-15} />
           </div>
           {account ? (
             <StyledContentButton style={{ fontSize: '16px' }}

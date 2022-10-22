@@ -3,13 +3,13 @@
  */
 const tokens = {
   cake: {
-    symbol: "CAKE",
+    symbol: "SSG",
     address: {
-      56: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
-      97: "0xFa60D973F7642B748046464e165A65B7323b0DEE",
+      56: '0xA9978393C52bc79b6E9579270Ce8C9cFCBd5B07B',
+      97: '0x5d750D2a56417b9F555c529818e0BF56B50962d9',
     },
-    decimals: 18,
-    projectLink: "https://pancakeswap.finance/",
+    decimals: 9,
+    projectLink: "https://poochain-swap-fork.web.app/",
   },
   txl: {
     symbol: "TXL",
