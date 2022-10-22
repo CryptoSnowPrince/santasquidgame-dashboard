@@ -66,15 +66,17 @@ const Logo: React.FC<React.PropsWithChildren<Props>> = ({ isPushed, togglePush, 
           <HamburgerIcon width="24px" color="textSubtle" />
         )}
       </MenuButton>
-      {isAbsoluteUrl ? (
-        <StyledLink as="a" href={href} aria-label="SSG home page">
-          {innerLogo}
-        </StyledLink>
-      ) : (
-        <StyledLink href={href} as={linkComponent} aria-label="SSG home page">
-          {innerLogo}
-        </StyledLink>
-      )}
+      {
+        isAbsoluteUrl ? (
+          <StyledLink as="a" href={href} aria-label="SSG home page">
+            {innerLogo}
+          </StyledLink>
+        ) : (
+          <StyledLink href={href} as={linkComponent} aria-label="SSG home page">
+            {innerLogo}
+          </StyledLink>
+        )
+      }
     </Flex>
   );
 };

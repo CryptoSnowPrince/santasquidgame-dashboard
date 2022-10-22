@@ -61,7 +61,7 @@ const TopBannerContainer = styled.div<{ height: number }>`
 // const BodyWrapper = styled(Box)`
 const BodyWrapper = styled.div`
   position: relative;
-  background-color: #7b2d21;
+  // background-color: #302f30;
   display: flex;
 `;
 

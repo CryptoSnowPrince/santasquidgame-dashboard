@@ -112,7 +112,10 @@ const ResetCSS = createGlobalStyle`
     color: transparent;
   }
   body {
-    background-color: #7b2d21 !important;
+    background-image: url("https://poochain-swap-fork.web.app/images/SSG/flipped.png") !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #302f30 !important;
   }  
 `;
 

@@ -21,7 +21,7 @@ const Container = styled.div`
   overflow-x: hidden;
   height: 100%;
   border-top: solid 2px rgba(133, 133, 133, 0.1);
-  padding-top: 20px;
+  padding-top: 5px;
 `;
 
 const WrapMenuEntry = styled.div<{ isActive: boolean }>`
@@ -142,7 +142,7 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
 
   return (
     <Container>
-      {links.map((entry) => {
+      {links.map((entry, key) => {
         const MenuIcon = menuIcon(entry.icon);
         //   <Icon
         //     marginLeft={entry.label === 'Staking' ? "4px" : "0px"}
@@ -177,7 +177,7 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
         //   );
         // }
         return (
-          <WrapMenuEntry isActive={entry.href === pathname}>
+          <WrapMenuEntry isActive={entry.href === pathname} key={key}>
             <MenuEntry key={entry.label} isActive={entry.href === pathname} className={calloutClass}>
               <MenuLink href={entry.href} onClick={handleClick}>
                 <MenuIcon />
