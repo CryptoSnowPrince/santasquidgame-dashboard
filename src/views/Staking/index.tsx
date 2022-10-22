@@ -99,7 +99,34 @@ const StyledInput = styled(Input) <{ textAlign?: string }>`
   box-shadow: rgb(1 7 16 / 85%) 0px 5px 12px 0px;
   border-radius: 1rem;
   border-style: inset;
-  background-color: rgb(123, 45, 33);
+  background-color: rgb(20 0 12);
+  --text-opacity: 1;
+  color: white;
+  width: 100%;
+  padding: 20px 10px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  outline: none;
+  margin-bottom: 20px;
+
+  &:focus:not(:disabled) {
+    box-shadow: rgb(1 7 16 / 85%) 0px 5px 12px 0px;
+  }
+
+  &::placeholder {
+    color: white;
+  }
+`
+
+const StyledInput1 = styled(Input) <{ textAlign?: string }>`
+  --border-opacity: 1;
+  border-color: rgb(167, 70, 61);
+  border-width: 3px;
+  margin-top: 10px;
+  box-shadow: rgb(1 7 16 / 85%) 0px 5px 12px 0px;
+  border-radius: 1rem;
+  border-style: inset;
+  background-color: rgb(58 0 41);
   --text-opacity: 1;
   color: white;
   width: 100%;
@@ -267,7 +294,7 @@ export default function Staking() {
       const res = await stake(stakingContract, account, stakeInputValue);
       // console.log("stake res=", res);
       // showToast(res.message, res.success ? "success" : "error");
-      if(res.success) {
+      if (res.success) {
         toastSuccess('Success', res.message)
       } else {
         toastError('Error', res.message)
@@ -280,7 +307,7 @@ export default function Staking() {
       const res = await tokenApprove(tokenContract, account, chainId);
       // console.log("approve res=", res);
       // showToast(res.message, res.success ? "success" : "error");
-      if(res.success) {
+      if (res.success) {
         toastSuccess('Success', res.message)
       } else {
         toastError('Error', res.message)
@@ -301,7 +328,7 @@ export default function Staking() {
     if (stakingContract && account) {
       const res = await claimRewards(stakingContract, account);
       // showToast(res.message, res.success ? "success" : "error");
-      if(res.success) {
+      if (res.success) {
         toastSuccess('Success', res.message)
       } else {
         toastError('Error', res.message)
@@ -318,7 +345,7 @@ export default function Staking() {
       }
       const res = await withdraw(stakingContract, account, unstakeInputValue);
       // showToast(res.message, res.success ? "success" : "error");
-      if(res.success) {
+      if (res.success) {
         toastSuccess('Success', res.message)
       } else {
         toastError('Error', res.message)
@@ -440,7 +467,7 @@ export default function Staking() {
               Max
             </button>
           </div>
-          <StyledInput placeholder="0"
+          <StyledInput1 placeholder="0"
             value={unstakeInputValue}
             type="number"
             onChange={onChangeUnStakeInputValue}
