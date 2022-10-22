@@ -106,7 +106,7 @@ export const StyledButton = styled.button<BaseButtonProps>`
 `;
 
 export const StyledConnectButton = styled.button<BaseButtonProps>`
-  background-color: rgb(190, 85, 50);
+  background-color: rgb(98 16 75);
   border: 3px solid rgb(117, 47, 38);
   border-radius: 8px;
   color: rgb(255, 255, 255);
