@@ -30,7 +30,7 @@ import ConnectWalletButton from '../../components/ConnectWalletButton'
 import { AppHeader, AppBody } from '../../components/App'
 import Page from '../Page'
 
-const StyledContentButton = styled(StyledConnectButton)`
+const ActionButton = styled(StyledConnectButton)`
   padding: 10px 20px !important;
   font-size: 16px;
 `
@@ -178,7 +178,7 @@ const ShowReferral = styled(Input) <{ textAlign?: string }>`
 export default function Staking() {
   // const [isOpen, setOpen] = useState(false);
   const { account, chainId } = useActiveWeb3React()
-  const { toastError, toastSuccess } = useToast()
+  const { toastError, toastSuccess, toastWarning } = useToast()
   const { isMobile } = useMatchBreakpoints()
 
   const [isUpdating, setIsUpdating] = useState(false);
@@ -277,7 +277,9 @@ export default function Staking() {
       setTotalStaked(resPoolInfo?.amount.toString())
 
       const resRewardPerBlock = await getRewardPerBlock(stakingContract);
-      setAPY(resPoolInfo?.amount.gt(0) ? resRewardPerBlock.mul(288 * 365).div(resPoolInfo?.amount).toString() : '0');
+      const _apy = resPoolInfo?.amount.gt(0) ? (resRewardPerBlock.mul(288).mul(365).div(resPoolInfo?.amount)).toString() : '0'
+      console.log('[PRINCE](apy): ', _apy)
+      setAPY(_apy);
 
       if (!account) {
         setAPY("0");
@@ -289,14 +291,18 @@ export default function Staking() {
       }
 
       const resUserBalance = await getTokenBalance(tokenContract, account);
-      console.log('[PRINCE](userBalance): ', resUserBalance)
-      setUserBalance(resUserBalance.toString());
+      setUserBalance(displayFixed(resUserBalance.toString(), 2, 9));
 
       const _allowance = await getAllowance(tokenContract, account, getStakingAddress(chainId));
-      if (_allowance.lt(ethers.utils.parseUnits(stakeInputValue, TOKEN_DECIMALS)))
+      console.log('[PRINCE](apy):1')
+      const val = ethers.utils.parseUnits(stakeInputValue, TOKEN_DECIMALS)
+      console.log('[PRINCE](apy):2', val)
+
+      if (_allowance.lt(val))
         setIsApproved(false);
       else
         setIsApproved(true);
+      console.log('[PRINCE](apy):3')
 
       const resUserInfo = await getUserInfo(stakingContract, account);
       setStakedAmount(resUserInfo?.amount.toString())
@@ -327,6 +333,11 @@ export default function Staking() {
   }
 
   const onStake = async () => {
+    if (pendingTx) {
+      toastWarning('Warning', 'Pending transaction')
+    }
+    setPendingTx(true)
+    console.log('[PRINCE](onstake)', isApproved)
     if (stakingContract && account) {
       if (!(parseInt(stakeInputValue) <= parseInt(userBalance))) {
         // showToast("Input stake amount correctly!", "error");
@@ -342,9 +353,14 @@ export default function Staking() {
         toastError('Error', res.message)
       }
     }
+    setPendingTx(false)
   }
 
   const onApprove = async () => {
+    if (pendingTx) {
+      toastWarning('Warning', 'Pending transaction')
+    }
+    setPendingTx(true)
     if (tokenContract && account) {
       const res = await tokenApprove(tokenContract, account, chainId);
       // console.log("approve res=", res);
@@ -355,10 +371,11 @@ export default function Staking() {
         toastError('Error', res.message)
       }
     }
+    setPendingTx(false)
   }
 
   const onClickUnStakeMax = () => {
-    setUnStakeInputValue(stakedAmount);
+    setUnStakeInputValue(displayFixed(stakedAmount, 2, 9));
   }
 
   const onChangeUnStakeInputValue = (e) => {
@@ -367,6 +384,10 @@ export default function Staking() {
   }
 
   const onClaimRewards = async () => {
+    if (pendingTx) {
+      toastWarning('Warning', 'Pending transaction')
+    }
+    setPendingTx(true)
     if (stakingContract && account) {
       const res = await claimRewards(stakingContract, account);
       // showToast(res.message, res.success ? "success" : "error");
@@ -376,11 +397,16 @@ export default function Staking() {
         toastError('Error', res.message)
       }
     }
+    setPendingTx(false)
   }
 
   const onUnstake = async () => {
+    if (pendingTx) {
+      toastWarning('Warning', 'Pending transaction')
+    }
+    setPendingTx(true)
     if (stakingContract && account) {
-      if (!(parseInt(unstakeInputValue) <= parseInt(stakedAmount))) {
+      if (!(parseInt(unstakeInputValue) <= parseInt(displayFixed(stakedAmount, 2, 9)))) {
         // showToast("Input unstake amount correctly!", "error");
         toastError('Error', 'Input unstake amount correctly!')
         return;
@@ -393,6 +419,7 @@ export default function Staking() {
         toastError('Error', res.message)
       }
     }
+    setPendingTx(false)
   }
 
   return (
@@ -404,7 +431,7 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">APY:</div>
             <div className="vault-value">
-              {apy === '0' || Number.isNaN(apy) ? '--%' : `${displayFixed(apy, 2, 9)}%`}
+              {parseFloat(apy) <= 0 || Number.isNaN(apy) ? '--%' : `${displayFixed(apy, 2)}%`}
             </div>
           </div>
           <div className="vault-info">
@@ -427,7 +454,7 @@ export default function Staking() {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
               Your tokens:
-              {displayFixed(userBalance, 2, 9)} SSG
+              {userBalance} SSG
             </span>
             <button type='button'
               style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer', border: 0, padding: 0, background: "transparent" }}
@@ -445,11 +472,12 @@ export default function Staking() {
             onChange={onChangeStakeInputValue}
           />
           {account ? (
-            <StyledContentButton
+            <ActionButton
+              disabled={pendingTx || parseFloat(stakeInputValue) <= 0 || Number.isNaN(parseFloat(stakeInputValue))}
               onClick={() => (isApproved ? onStake() : onApprove())}
             >
-              {(isApproved ? 'Stake' : 'Approve')}
-            </StyledContentButton>
+              {(isApproved ? 'STAKE' : 'APPROVE')}
+            </ActionButton>
           ) : (
             <ConnectWalletButton />
           )}
@@ -488,14 +516,15 @@ export default function Staking() {
               {displayFixed(pendingReward, 2, 9)} SSG
             </div>
           </div>
-          <StyledContentButton style={{ padding: '11px 22px', fontSize: '16px', marginTop: '10px' }}
+          <ActionButton style={{ padding: '11px 22px', fontSize: '16px', marginTop: '10px' }}
+            disabled={pendingTx || parseFloat(displayFixed(pendingReward, 2, 9)) <= 0}
             onClick={onClaimRewards}
           >
             CLAIM EARNINGS
-          </StyledContentButton>
+          </ActionButton>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
-              {`Staked Tokens: ${stakedAmount} SSG`}
+              {`Staked Tokens: ${displayFixed(stakedAmount, 2, 9)} SSG`}
             </span>
             <button type='button'
               style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer', border: 0, padding: 0, background: "transparent" }}
@@ -511,11 +540,16 @@ export default function Staking() {
             onChange={onChangeUnStakeInputValue}
           />
           {account ? (
-            <StyledContentButton style={{ padding: '11px 22px', fontSize: '16px' }}
+            <ActionButton style={{ padding: '11px 22px', fontSize: '16px' }}
               onClick={onUnstake}
+              disabled={
+                pendingTx ||
+                Number.isNaN(unstakeInputValue) ||
+                parseFloat(displayFixed(stakedAmount, 2, 9)) < parseFloat(unstakeInputValue)
+              }
             >
               UNSTAKE
-            </StyledContentButton>
+            </ActionButton>
           ) : (
             <ConnectWalletButton />
           )}
@@ -552,11 +586,11 @@ export default function Staking() {
             <CopyButton width="30px" text={refLink} tooltipMessage='Copied!' tooltipTop={-30} tooltipRight={-15} />
           </div>
           {account ? (
-            <StyledContentButton style={{ fontSize: '16px' }}
+            <ActionButton style={{ fontSize: '16px' }}
               onClick={onUnstake}
             >
               CLAIM REFERRAL REWARDS
-            </StyledContentButton>
+            </ActionButton>
           ) : (
             <ConnectWalletButton />
           )}
