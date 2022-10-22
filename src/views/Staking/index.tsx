@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Button, Input, useToast } from '@pancakeswap/uikit'
+import { Button, Input, useToast, useMatchBreakpoints, Flex } from '@pancakeswap/uikit'
 import { StyledConnectButton } from '@pancakeswap/uikit/src/components/Button/StyledButton'
 import { ethers } from 'ethers'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
@@ -23,6 +23,7 @@ import {
 } from 'utils/contractHelpers';
 import { displayEther, displayFixed, displayFixedNumber, displayUnits, getBNBPrice, getTokenPrice } from '../../utils'
 import ConnectWalletButton from '../../components/ConnectWalletButton'
+import { CopyButton } from 'components/CopyButton'
 import { AppHeader, AppBody } from '../../components/App'
 import Page from '../Page'
 
@@ -36,11 +37,11 @@ const StyledContentContainer = styled.div`
     flex-direction: column;
     background-color: #302f30;
     width: calc(100% - 40px);
-    max-width: 700px;
+    max-width: 850px;
     // max-height: 840px;
     box-shadow: 0px 0px 14px 8px #cb5741;
     border-radius: 18px;
-    padding: 30px;
+    padding: 15px;
     
     .title-6 {
       --text-opacity: 1;
@@ -145,6 +146,35 @@ const StyledInput1 = styled(Input) <{ textAlign?: string }>`
   }
 `
 
+const StyledReferral = styled(Input) <{ textAlign?: string }>`
+  --border-opacity: 1;
+  border-color: rgb(167, 70, 61);
+  border-width: 3px;
+  margin-right: 10px;
+  box-shadow: rgb(1 7 16 / 85%) 0px 5px 12px 0px;
+  border-radius: 1rem;
+  border-style: inset;
+  background-color: rgb(58 0 41);
+  --text-opacity: 1;
+  color: white;
+  width: (100% - 20px);
+  padding: 20px 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  outline: none;
+
+  &:focus:not(:disabled) {
+    box-shadow: rgb(1 7 16 / 85%) 0px 5px 12px 0px;
+  }
+
+  &::placeholder {
+    color: white;
+  }
+`
+
+export const PUBLIC_URL = "https://poochain-swap-fork.web.app"
+export const REF_PREFIX = `${PUBLIC_URL}/?ref=`
+
 export default function Staking() {
   // const [isOpen, setOpen] = useState(false);
   const { account, chainId } = useActiveWeb3React()
@@ -163,6 +193,9 @@ export default function Staking() {
   const [isApproved, setIsApproved] = useState(false);
 
   const [stakedAmount, setStakedAmount] = useState("0");
+  const [totalReferralAmount, setTotalReferralAmount] = useState("0");
+  const [pendingReferralAmount, setPendingReferralAmount] = useState("0");
+  const [refLink, setRefLink] = useState(`${REF_PREFIX}0x0000000000000000000000000000000000000000`);
   const [stakedUSD, setStakedUSD] = useState("0");
   const [share, setShare] = useState("0");
   const [pendingReward, setPendingReward] = useState("0");
@@ -170,6 +203,7 @@ export default function Staking() {
   const [unstakeInputValue, setUnStakeInputValue] = useState('0');
 
   const { toastError, toastSuccess } = useToast()
+  const { isMobile } = useMatchBreakpoints()
 
   const [isUpdating, setIsUpdating] = useState(false);
   let timerId: NodeJS.Timeout;
@@ -179,6 +213,13 @@ export default function Staking() {
   }, [])
 
   useEffect(() => {
+    if (account) {
+      const refLink = `${REF_PREFIX}` + account;
+      setRefLink(refLink);
+    } else {
+      setRefLink(`${REF_PREFIX}0x0000000000000000000000000000000000000000`);
+    }
+
     if (tokenContract && stakingContract)
       updateParameters();
 
@@ -356,7 +397,7 @@ export default function Staking() {
   return (
     <>
       {/* <Overlay onClick={onHandleSideBar} isOpen={isOpen} /> */}
-      <StyledContentContainer style={{ margin: '30px' }}>
+      <StyledContentContainer style={{ marginLeft: isMobile ? '20px' : '100px', marginTop: '50px' }}>
         <div style={{ margin: '1rem 0px' }}>
           <h5 className="title-6">OUR STAKING PLATFORM</h5>
           <div className="vault-info">
@@ -418,7 +459,7 @@ export default function Staking() {
           )}
         </div>
       </StyledContentContainer>
-      <StyledContentContainer style={{ margin: '50px 20px 20px' }}>
+      <StyledContentContainer style={{ marginLeft: isMobile ? '20px' : '100px', marginTop: '50px' }}>
         <div style={{ margin: '1rem 0px' }}>
           <h5 className="title-6">EARNINGS AND UNSTAKE TOKENS</h5>
           <div className="vault-info">
@@ -472,7 +513,6 @@ export default function Staking() {
             type="number"
             onChange={onChangeUnStakeInputValue}
           />
-
           {account ? (
             <StyledContentButton style={{ padding: '11px 22px', fontSize: '16px' }}
               onClick={onUnstake}
@@ -485,6 +525,46 @@ export default function Staking() {
           <p className="fee-title" style={{ marginTop: '1rem' }}>
             This application is decentralized and is provided with no guarantees or warranties of any kind.
           </p>
+        </div>
+      </StyledContentContainer>
+      <StyledContentContainer style={{ marginLeft: isMobile ? '20px' : '100px', marginTop: '50px' }}>
+        <div style={{ margin: '1rem 0px' }}>
+          <h5 className="title-6">REFERRAL REWARDS</h5>
+          <div className="vault-info">
+            <div className="vault-title">Total Referral Rewards:</div>
+            <div className="vault-value">
+              {totalReferralAmount}
+            </div>
+          </div>
+          <div className="vault-info">
+            <div className="vault-title">Pending Referral Rewards:</div>
+            <div className="vault-value">
+              {pendingReferralAmount}
+            </div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', color: '#c5c6d1', fontSize: '15px' }}>
+            Share your referral link to earn 10% of Rewards
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', position: "relative", marginTop: '10px', marginBottom: '20px' }}>
+            <StyledReferral
+              value={refLink}
+              onClick={() => {
+                if (navigator.clipboard) {
+                  navigator.clipboard.writeText(refLink)
+                }
+              }}
+            />
+            <CopyButton width="30px" text={refLink} tooltipMessage='Copied' tooltipTop={-30} tooltipRight={-20} />
+          </div>
+          {account ? (
+            <StyledContentButton style={{ fontSize: '16px' }}
+              onClick={onUnstake}
+            >
+              CLAIM REFERRAL REWARDS
+            </StyledContentButton>
+          ) : (
+            <ConnectWalletButton />
+          )}
         </div>
       </StyledContentContainer>
     </>
