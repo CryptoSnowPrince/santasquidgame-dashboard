@@ -9,18 +9,17 @@ import { getStakingAddress } from 'utils/addressHelpers'
 import {
   claimRewards,
   getAllowance,
-  getClaimedReward,
   getPendingReward,
   getRewardPerBlock,
   getTokenBalance,
-  getTotalBNBClaimedRewards,
-  getTotalStaked,
+  getPoolInfo,
   getUserInfo,
   stake,
   tokenApprove,
   TOKEN_DECIMALS,
   withdraw
 } from 'utils/contractHelpers';
+import { ADMIN_ACCOUNT, REF_PREFIX } from 'config/constants'
 import { CopyButton } from 'components/CopyButton'
 import { displayEther, displayFixed, displayFixedNumber, displayUnits, getBNBPrice, getTokenPrice, isAddress } from '../../utils'
 import ConnectWalletButton from '../../components/ConnectWalletButton'
@@ -172,10 +171,6 @@ const StyledReferral = styled(Input) <{ textAlign?: string }>`
   }
 `
 
-export const PUBLIC_URL = "https://poochain-swap-fork.web.app"
-export const REF_PREFIX = `${PUBLIC_URL}/?ref=`
-export const ADMIN_ACCOUNT = '0x2Cc4467e7a94D55497B704a0acd90ACd1BF9A5af'
-
 export default function Staking() {
   // const [isOpen, setOpen] = useState(false);
   const { account, chainId } = useActiveWeb3React()
@@ -273,10 +268,10 @@ export default function Staking() {
       // const [ bnbPrice, setBNBPrice ] = useState(0);
       // const [ tokenPrice, setTokenPrice ] = useState(0);
       setIsUpdating(true);
-      const resTotalBNBClaimed = await getTotalBNBClaimedRewards(stakingContract);
-      setTotalBNBClaimed(resTotalBNBClaimed.toString());
-      const resTotalStaked = await getTotalStaked(stakingContract);
-      setTotalStaked(resTotalStaked.toString());
+      // const resTotalBNBClaimed = await getTotalBNBClaimedRewards(stakingContract);
+      // setTotalBNBClaimed(resTotalBNBClaimed.toString());
+      const resTotalStaked = await getPoolInfo(stakingContract);
+      setTotalStaked(resTotalStaked?.amount.toString());
       if (bnbPriceUSD === "0" && tokenPriceUSD === "0") {
         // showToast("Please check your network status!", "error");
         getPriceInfo();
@@ -328,8 +323,8 @@ export default function Staking() {
 
       const resPendingReward = await getPendingReward(stakingContract, account);
       setPendingReward(displayEther(resPendingReward));
-      const resClaimedReward = await getClaimedReward(stakingContract, account);
-      setClaimedReward(displayEther(resClaimedReward));
+      // const resClaimedReward = await getClaimedReward(stakingContract, account);
+      // setClaimedReward(displayEther(resClaimedReward));
     } catch (err) {
       console.log("error = ", err)
     }

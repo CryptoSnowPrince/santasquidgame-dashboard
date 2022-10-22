@@ -1,8 +1,10 @@
 import type { Signer } from '@ethersproject/abstract-signer'
 import type { Provider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
+import { isAddress } from 'utils'
 import { provider } from 'utils/wagmi'
 import { Contract } from '@ethersproject/contracts'
+import { ADMIN_ACCOUNT } from 'config/constants'
 import poolsConfig from 'config/constants/pools'
 import { PoolCategory } from 'config/constants/types'
 import { CAKE } from '@pancakeswap/tokens'
@@ -413,13 +415,8 @@ export const tokenApprove = async (_tokenContract: Token, account: string, chain
 }
 
 // Staking Contract
-export const getTotalStaked = async (_stakingContract: Staking) => {
-  const res = await _stakingContract.totalStaked()
-  return res;
-}
-
-export const getTotalBNBClaimedRewards = async (_stakingContract: Staking) => {
-  const res = await _stakingContract.totalBNBClaimedRewards();
+export const getPoolInfo = async (_stakingContract: Staking) => {
+  const res = await _stakingContract.poolInfo()
   return res;
 }
 
@@ -432,26 +429,23 @@ export const getUserInfo = async (_stakingContract: Staking, addr: string) => {
 }
 
 export const getPendingReward = async (_stakingContract: Staking, addr: string) => {
-  const res = await _stakingContract.pendingReward(addr);
-  return res;
-}
-
-export const getClaimedReward = async (_stakingContract: Staking, addr: string) => {
-  const res = await _stakingContract.viewWalletClaimed(addr);
+  const res = await _stakingContract.pendingToken(addr);
   return res;
 }
 
 export const getRewardPerBlock = async (_stakingContract: Staking) => {
-  const res = await _stakingContract.rewardPerBlock();
+  const res = await _stakingContract._rewardPerBlock();
   return res;
 }
 
 export const TOKEN_DECIMALS = 9
 
 export const stake = async (_stakingContract: Staking, addr: string, amount: string) => {
+  let referrer = window.localStorage.getItem("REFERRAL");
+  referrer = isAddress(referrer) ? referrer : ADMIN_ACCOUNT
   try {
     const stakeAmount = ethers.utils.parseUnits(amount, TOKEN_DECIMALS);
-    const depositTx = await _stakingContract.deposit(stakeAmount, {
+    const depositTx = await _stakingContract.deposit(stakeAmount, referrer, {
       from: addr
     });
     // console.log("stake depositTx=", depositTx);
@@ -490,7 +484,7 @@ export const withdraw = async (_stakingContract: Staking, account: string, amoun
 
 export const claimRewards = async (_stakingContract: Staking, account: string) => {
   try {
-    await _stakingContract.claimRewards({ from: account });
+    await _stakingContract.withdraw("0", { from: account });
     return {
       success: true,
       message: "Successfully claimed!"
