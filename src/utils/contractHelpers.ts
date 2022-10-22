@@ -96,6 +96,7 @@ import bCakeFarmBoosterProxyFactoryAbi from 'config/abi/bCakeFarmBoosterProxyFac
 import bCakeProxyAbi from 'config/abi/bCakeProxy.json'
 import stakingAbi from 'config/abi/staking.json'
 import tokenAbi from 'config/abi/token.json'
+import referralAbi from '.config/abi/referral.json'
 
 // Types
 import type {
@@ -145,6 +146,7 @@ import type {
   BCakeProxy,
   Staking,
   Token,
+  Referral,
 } from 'config/abi/types'
 import { ChainId } from '@pancakeswap/sdk'
 
@@ -371,6 +373,10 @@ export const getBCakeProxyContract = (proxyContractAddress: string, signer?: Sig
 
 export const getStakingContract = (stakingContractAddress: string, signer?: Signer | Provider) => {
   return getContract({ abi: stakingAbi, address: stakingContractAddress, signer }) as Staking
+}
+
+export const getReferralContract = (referralContractAddress: string, signer?: Signer | Provider) => {
+  return getContract({ abi: referralAbi, address: referralContractAddress, signer }) as Referral
 }
 
 export const getTokenContract = (tokenContractAddress: string, signer?: Signer | Provider) => {

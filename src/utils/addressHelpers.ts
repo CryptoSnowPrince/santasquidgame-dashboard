@@ -128,3 +128,7 @@ export const getStakingAddress = (chainId: number) => {
 export const getTokenAddress = (chainId: number) => {
   return getAddress(addresses.token, chainId)
 }
+
+export const getReferralAddress = (chainId: number) => {
+  return getAddress(addresses.referral, chainId)
+}

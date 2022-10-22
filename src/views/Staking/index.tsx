@@ -4,7 +4,7 @@ import { Button, Input, useToast, useMatchBreakpoints, Flex } from '@pancakeswap
 import { StyledConnectButton } from '@pancakeswap/uikit/src/components/Button/StyledButton'
 import { ethers } from 'ethers'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import { useCustomTokenContract, useCustomStakingContract } from 'hooks/useContract'
+import { useCustomTokenContract, useCustomStakingContract, useCustomReferralContract } from 'hooks/useContract'
 import { getStakingAddress } from 'utils/addressHelpers'
 import {
   claimRewards,
@@ -21,10 +21,9 @@ import {
   TOKEN_DECIMALS,
   withdraw
 } from 'utils/contractHelpers';
-import { displayEther, displayFixed, displayFixedNumber, displayUnits, getBNBPrice, getTokenPrice } from '../../utils'
-import { isAddress } from 'utils'
-import ConnectWalletButton from '../../components/ConnectWalletButton'
 import { CopyButton } from 'components/CopyButton'
+import { displayEther, displayFixed, displayFixedNumber, displayUnits, getBNBPrice, getTokenPrice, isAddress } from '../../utils'
+import ConnectWalletButton from '../../components/ConnectWalletButton'
 import { AppHeader, AppBody } from '../../components/App'
 import Page from '../Page'
 
@@ -200,6 +199,7 @@ export default function Staking() {
 
   const tokenContract = useCustomTokenContract();
   const stakingContract = useCustomStakingContract();
+  const referralContract = useCustomReferralContract()
 
   const [bnbPriceUSD, setBNBPrice] = useState("0");
   const [tokenPriceUSD, setTokenPrice] = useState("0");
@@ -234,8 +234,8 @@ export default function Staking() {
 
   useEffect(() => {
     if (account) {
-      const refLink = `${REF_PREFIX}` + account;
-      setRefLink(refLink);
+      const refLinkVal = `${REF_PREFIX}${account}`;
+      setRefLink(refLinkVal);
     } else {
       setRefLink(`${REF_PREFIX}0x0000000000000000000000000000000000000000`);
     }

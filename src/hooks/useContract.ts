@@ -13,7 +13,7 @@ import zapAbi from 'config/abi/zap.json'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useProviderOrSigner } from 'hooks/useProviderOrSigner'
 import { useMemo } from 'react'
-import { getMulticallAddress, getPredictionsV1Address, getTokenAddress, getStakingAddress, getZapAddress } from 'utils/addressHelpers'
+import { getMulticallAddress, getPredictionsV1Address, getTokenAddress, getStakingAddress, getReferralAddress, getZapAddress } from 'utils/addressHelpers'
 import {
   getAnniversaryAchievementContract,
   getBCakeFarmBoosterContract,
@@ -59,6 +59,7 @@ import {
   getTradingCompetitionContractFanToken,
   getTradingCompetitionContractMobox,
   getTradingCompetitionContractMoD,
+  getReferralContract,
 } from 'utils/contractHelpers'
 import { useSigner } from 'wagmi'
 
@@ -380,6 +381,15 @@ export function useCustomTokenContract(withSignerIfPossible = true) {
   const providerOrSigner = useProviderOrSigner(withSignerIfPossible)
   return useMemo(
     () => getTokenContract(getTokenAddress(chainId), providerOrSigner),
+    [providerOrSigner],
+  )
+}
+
+export function useCustomReferralContract(withSignerIfPossible = true) {
+  const { chainId } = useActiveWeb3React()
+  const providerOrSigner = useProviderOrSigner(withSignerIfPossible)
+  return useMemo(
+    () => getReferralContract(getReferralAddress(chainId), providerOrSigner),
     [providerOrSigner],
   )
 }
