@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button, Heading, Text, LogoIcon } from '@pancakeswap/uikit'
+import { Button, Heading, Text, LogoIcon, Image } from '@pancakeswap/uikit'
 import Page from 'components/Layout/Page'
 import { useTranslation } from '@pancakeswap/localization'
 import Link from 'next/link'
@@ -18,7 +18,8 @@ const NotFound = ({ statusCode = 404 }: { statusCode?: number }) => {
   return (
     <Page>
       <StyledNotFound>
-        <LogoIcon width="64px" mb="8px" />
+        {/* <LogoIcon width="64px" mb="8px" /> */}
+        <Image height={100} width={300} src={'/images/SSG/SSG_logo.png'} />
         <Heading scale="xxl">{statusCode}</Heading>
         <Text mb="16px">{t('Oops, page not found.')}</Text>
         <Link href="/" passHref>
