@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { Button, Input, useToast, useMatchBreakpoints, Flex } from '@pancakeswap/uikit'
 import { StyledConnectButton } from '@pancakeswap/uikit/src/components/Button/StyledButton'
 import { ethers } from 'ethers'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useCustomTokenContract, useCustomStakingContract, useCustomReferralContract } from 'hooks/useContract'
+import { useBNBBusdPrice, useSSGBNBPrice } from 'hooks/useBUSDPrice'
 import { getStakingAddress } from 'utils/addressHelpers'
+import { multiplyPriceByAmount } from 'utils/prices'
 import {
   claimRewards,
   getAllowance,
@@ -17,7 +19,9 @@ import {
   stake,
   tokenApprove,
   TOKEN_DECIMALS,
-  withdraw
+  withdraw,
+  getPendingRefReward,
+  getTotalRefReward,
 } from 'utils/contractHelpers';
 import { ADMIN_ACCOUNT, REF_PREFIX } from 'config/constants'
 import { CopyButton } from 'components/CopyButton'
@@ -91,7 +95,7 @@ const StyledContentContainer = styled.div`
 }
 `
 
-const StyledInput = styled(Input) <{ textAlign?: string }>`
+const InputStakeAmount = styled(Input) <{ textAlign?: string }>`
   --border-opacity: 1;
   border-color: rgb(167, 70, 61);
   border-width: 3px;
@@ -118,7 +122,7 @@ const StyledInput = styled(Input) <{ textAlign?: string }>`
   }
 `
 
-const StyledInput1 = styled(Input) <{ textAlign?: string }>`
+const InputUnstakeAmount = styled(Input) <{ textAlign?: string }>`
   --border-opacity: 1;
   border-color: rgb(167, 70, 61);
   border-width: 3px;
@@ -145,7 +149,7 @@ const StyledInput1 = styled(Input) <{ textAlign?: string }>`
   }
 `
 
-const StyledReferral = styled(Input) <{ textAlign?: string }>`
+const ShowReferral = styled(Input) <{ textAlign?: string }>`
   --border-opacity: 1;
   border-color: rgb(167, 70, 61);
   border-width: 3px;
@@ -174,10 +178,58 @@ const StyledReferral = styled(Input) <{ textAlign?: string }>`
 export default function Staking() {
   // const [isOpen, setOpen] = useState(false);
   const { account, chainId } = useActiveWeb3React()
+  const { toastError, toastSuccess } = useToast()
+  const { isMobile } = useMatchBreakpoints()
+
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const queryString = window.location.search;
   const parameters = new URLSearchParams(queryString);
   const newReferral = parameters.get('ref');
+
+  const tokenContract = useCustomTokenContract();
+  const stakingContract = useCustomStakingContract();
+  const referralContract = useCustomReferralContract()
+
+  const [apy, setAPY] = useState("0");
+  const [totalStaked, setTotalStaked] = useState("0");
+
+  const [stakeInputValue, setStakeInputValue] = useState('0');
+  const [unstakeInputValue, setUnStakeInputValue] = useState('0');
+  const [pendingTx, setPendingTx] = useState(false);
+
+  const [refLink, setRefLink] = useState(`${REF_PREFIX}0x0000000000000000000000000000000000000000`);
+
+  const [isApproved, setIsApproved] = useState(false);
+
+  const [userBalance, setUserBalance] = useState("0");
+
+  const [stakedAmount, setStakedAmount] = useState("0");
+  const [pendingReward, setPendingReward] = useState("0");
+  const [claimedReward, setClaimedReward] = useState("0");
+  const [totalReferralAmount, setTotalReferralAmount] = useState("0");
+  const [pendingReferralAmount, setPendingReferralAmount] = useState("0");
+
+  const ssgPriceBNB = useSSGBNBPrice({ forceMainnet: true })
+  const bnbPriceUsd = useBNBBusdPrice({ forceMainnet: true })
+
+  const totalStakedUSD = useCallback(() => {
+    const ssgPriceUSD = multiplyPriceByAmount(ssgPriceBNB, multiplyPriceByAmount(bnbPriceUsd, 1))
+    const val = parseFloat(displayUnits(totalStaked, 9)) * ssgPriceUSD;
+    return Number.isNaN(val) ? 0 : val;
+  }, [ssgPriceBNB, bnbPriceUsd, totalStaked])
+
+  const userStakedUSD = useCallback(() => {
+    const ssgPriceUSD = multiplyPriceByAmount(ssgPriceBNB, multiplyPriceByAmount(bnbPriceUsd, 1))
+    const val = parseFloat(displayUnits(stakedAmount, 9)) * ssgPriceUSD;
+    return Number.isNaN(val) ? 0 : val;
+  }, [ssgPriceBNB, bnbPriceUsd, stakedAmount])
+
+  const userShare = useCallback(() => {
+    const val = parseFloat(totalStaked) > 0 && !Number.isNaN(parseFloat(totalStaked)) ? parseFloat(stakedAmount) / parseFloat(totalStaked) : 0;
+    return Number.isNaN(val) ? 0 : val;
+  }, [totalStaked, stakedAmount])
+
 
   useEffect(() => {
     const referral = window.localStorage.getItem("REFERRAL")
@@ -192,40 +244,7 @@ export default function Staking() {
     console.log("[PRINCE](referral): ", referral);
   }, [newReferral])
 
-  const tokenContract = useCustomTokenContract();
-  const stakingContract = useCustomStakingContract();
-  const referralContract = useCustomReferralContract()
-
-  const [bnbPriceUSD, setBNBPrice] = useState("0");
-  const [tokenPriceUSD, setTokenPrice] = useState("0");
-
-  const [apy, setAPY] = useState("0");
-  const [totalBNBClaimed, setTotalBNBClaimed] = useState("0");
-  const [totalStaked, setTotalStaked] = useState("0");
-  const [totalStakedUSD, setTotalStakedUSD] = useState("0");
-  const [balance, setBalance] = useState("0");
-  const [stakeInputValue, setStakeInputValue] = useState('0');
-  const [isApproved, setIsApproved] = useState(false);
-
-  const [stakedAmount, setStakedAmount] = useState("0");
-  const [totalReferralAmount, setTotalReferralAmount] = useState("0");
-  const [pendingReferralAmount, setPendingReferralAmount] = useState("0");
-  const [refLink, setRefLink] = useState(`${REF_PREFIX}0x0000000000000000000000000000000000000000`);
-  const [stakedUSD, setStakedUSD] = useState("0");
-  const [share, setShare] = useState("0");
-  const [pendingReward, setPendingReward] = useState("0");
-  const [claimedReward, setClaimedReward] = useState("0");
-  const [unstakeInputValue, setUnStakeInputValue] = useState('0');
-
-  const { toastError, toastSuccess } = useToast()
-  const { isMobile } = useMatchBreakpoints()
-
-  const [isUpdating, setIsUpdating] = useState(false);
   let timerId: NodeJS.Timeout;
-
-  useEffect(() => {
-    getPriceInfo();
-  }, [])
 
   useEffect(() => {
     if (account) {
@@ -247,61 +266,31 @@ export default function Staking() {
     return () => {
       clearInterval(timerId)
     }
-  }, [tokenContract, stakingContract, account, bnbPriceUSD, tokenPriceUSD]);
-
-  const getPriceInfo = async () => {
-    const { success: bnbSuccess, bnbPrice: _bnbPrice } = await getBNBPrice();
-    const { success: tokenSuccess, tokenPrice: _tokenPrice } = await getTokenPrice(chainId);
-    if (!(bnbSuccess && tokenSuccess)) {
-      // showToast("Please check your network status!", "error");
-      toastError('Error', 'Please check your network status!')
-      return;
-    }
-    setBNBPrice(_bnbPrice);
-    setTokenPrice(_tokenPrice);
-  }
+  }, [tokenContract, stakingContract, referralContract, account]);
 
   const updateParameters = async () => {
     console.log("updateParameters isUpdating=", isUpdating);
     try {
-      // get Pool info first
-      // const [ bnbPrice, setBNBPrice ] = useState(0);
-      // const [ tokenPrice, setTokenPrice ] = useState(0);
       setIsUpdating(true);
-      // const resTotalBNBClaimed = await getTotalBNBClaimedRewards(stakingContract);
-      // setTotalBNBClaimed(resTotalBNBClaimed.toString());
-      const resTotalStaked = await getPoolInfo(stakingContract);
-      setTotalStaked(resTotalStaked?.amount.toString());
-      if (bnbPriceUSD === "0" && tokenPriceUSD === "0") {
-        // showToast("Please check your network status!", "error");
-        getPriceInfo();
-        return;
-      }
 
-      const _totalStakedUSD = parseFloat(displayUnits(resTotalStaked, 9)) * parseFloat(tokenPriceUSD);
-      setTotalStakedUSD(_totalStakedUSD.toString());
+      const resPoolInfo = await getPoolInfo(stakingContract);
+      setTotalStaked(resPoolInfo?.amount.toString())
 
-      // const [ apy, setAPY ] = useState("0");
       const resRewardPerBlock = await getRewardPerBlock(stakingContract);
-      const _perBlock = parseFloat(displayEther(resRewardPerBlock));
-      const rewardPerYear = _perBlock * 28800 * 365;
-      const rewardPerYearUSD = rewardPerYear * parseFloat(bnbPriceUSD);
-      const _apy = rewardPerYearUSD / _totalStakedUSD * 100;
-      setAPY(_apy.toString());
+      setAPY(resPoolInfo?.amount.gt(0) ? resRewardPerBlock.mul(288 * 365).div(resPoolInfo?.amount).toString() : '0');
 
       if (!account) {
         setAPY("0");
-        setBalance("0");
+        setUserBalance("0");
         setStakedAmount("0");
-        setStakedUSD("0");
-        setShare("0");
         setPendingReward("0");
         setClaimedReward("0");
         return;
       }
-      const resBal = await getTokenBalance(tokenContract, account);
-      const _bal = displayFixed(resBal, 0);
-      setBalance(_bal);
+
+      const resUserBalance = await getTokenBalance(tokenContract, account);
+      console.log('[PRINCE](userBalance): ', resUserBalance)
+      setUserBalance(resUserBalance.toString());
 
       const _allowance = await getAllowance(tokenContract, account, getStakingAddress(chainId));
       if (_allowance.lt(ethers.utils.parseUnits(stakeInputValue, TOKEN_DECIMALS)))
@@ -310,29 +299,26 @@ export default function Staking() {
         setIsApproved(true);
 
       const resUserInfo = await getUserInfo(stakingContract, account);
-      const _stakedBal = displayFixed(resUserInfo.amount, 0);
-      setStakedAmount(_stakedBal);
-
-      // const [ stakedUSD, setStakedUSD ] = useState("0");
-      // const [ share, setShare ] = useState("0");
-      const _stakedUSD = parseFloat(stakedAmount) * parseFloat(tokenPriceUSD);
-      setStakedUSD(_stakedUSD.toString());
-      const _share = parseFloat(_stakedBal) / parseFloat(resTotalStaked.toString());
-      setShare(_share.toString());
-      console.log("_share", _share);
+      setStakedAmount(resUserInfo?.amount.toString())
+      setClaimedReward(resUserInfo?.rewardDebt.toString());
 
       const resPendingReward = await getPendingReward(stakingContract, account);
-      setPendingReward(displayEther(resPendingReward));
-      // const resClaimedReward = await getClaimedReward(stakingContract, account);
-      // setClaimedReward(displayEther(resClaimedReward));
+      setPendingReward(resPendingReward.toString());
+
+      const resPendingRefReward = await getPendingRefReward(referralContract, account);
+      setPendingReferralAmount(resPendingRefReward.toString())
+
+      const resTotalRefReward = await getTotalRefReward(referralContract, account);
+      setTotalReferralAmount(resTotalRefReward.toString())
     } catch (err) {
       console.log("error = ", err)
     }
+    console.log("updateParameters isUpdating=", "pass");
     setIsUpdating(false);
   }
 
   const onClickStakeMax = () => {
-    setStakeInputValue(balance);
+    setStakeInputValue(userBalance);
   }
 
   const onChangeStakeInputValue = (e) => {
@@ -342,7 +328,7 @@ export default function Staking() {
 
   const onStake = async () => {
     if (stakingContract && account) {
-      if (!(parseInt(stakeInputValue) <= parseInt(balance))) {
+      if (!(parseInt(stakeInputValue) <= parseInt(userBalance))) {
         // showToast("Input stake amount correctly!", "error");
         toastError('Error', 'Input stake amount correctly!')
         return;
@@ -418,30 +404,30 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">APY:</div>
             <div className="vault-value">
-              {apy === '0' || Number.isNaN(apy) ? '--%' : `${displayFixedNumber(apy, 2)}%`}
+              {apy === '0' || Number.isNaN(apy) ? '--%' : `${displayFixed(apy, 2, 9)}%`}
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Total Staked:</div>
             <div className="vault-value">
-              {displayFixed(totalStaked, 2, 9)}
+              {displayFixed(totalStaked, 2, 9)} SSG
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Total Staked (USD):</div>
             <div className="vault-value">
-              {`$ ${displayFixedNumber(totalStakedUSD, 2)}`}
+              {`$ ${displayFixedNumber(totalStakedUSD(), 2)}`}
             </div>
           </div>
         </div>
-        <div style={{ margin: '1rem 0px' }}>
+        <div style={{ margin: '0.8rem 0px' }}>
           <h5 className="title-6" style={{ fontSize: '1.2em', fontWeight: '300' }}>
             STAKE YOUR TOKENS, EARN REWARDS
           </h5>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
               Your tokens:
-              {balance}
+              {displayFixed(userBalance, 2, 9)} SSG
             </span>
             <button type='button'
               style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer', border: 0, padding: 0, background: "transparent" }}
@@ -450,9 +436,10 @@ export default function Staking() {
               Max
             </button>
           </div>
-          <StyledInput
+          <InputStakeAmount
             placeholder="0"
             value={stakeInputValue}
+            min='0'
             type="number"
             textAlign="left"
             onChange={onChangeStakeInputValue}
@@ -474,41 +461,41 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">Your Staked:</div>
             <div className="vault-value">
-              {stakedAmount}
+              {displayFixed(stakedAmount, 2, 9)} SSG
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Stake (USD):</div>
             <div className="vault-value">
-              {`$ ${displayFixedNumber(stakedUSD, 2)}`}
+              {`$ ${displayFixedNumber(userStakedUSD(), 2)}`}
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Share:</div>
             <div className="vault-value">
-              {`${displayFixedNumber(share, 2)}%`}
+              {`${displayFixedNumber(userShare(), 2)}%`}
             </div>
           </div>
           <div className="vault-info">
-            <div className="vault-title">Your Pending BNB Rewards:</div>
+            <div className="vault-title">Your Claimed Rewards:</div>
             <div className="vault-value">
-              {`${displayFixedNumber(pendingReward, 6)}`}
+              {displayFixed(claimedReward, 2, 9)} SSG
             </div>
           </div>
           <div className="vault-info">
-            <div className="vault-title">Your Claimed BNB Rewards:</div>
+            <div className="vault-title">Your Pending Rewards:</div>
             <div className="vault-value">
-              {`${displayFixedNumber(claimedReward, 6)}`}
+              {displayFixed(pendingReward, 2, 9)} SSG
             </div>
           </div>
-          <StyledContentButton style={{ padding: '11px 22px', fontSize: '16px' }}
+          <StyledContentButton style={{ padding: '11px 22px', fontSize: '16px', marginTop: '10px' }}
             onClick={onClaimRewards}
           >
             CLAIM EARNINGS
           </StyledContentButton>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
-              {`Staked Tokens: ${stakedAmount}`}
+              {`Staked Tokens: ${stakedAmount} SSG`}
             </span>
             <button type='button'
               style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer', border: 0, padding: 0, background: "transparent" }}
@@ -517,8 +504,9 @@ export default function Staking() {
               Max
             </button>
           </div>
-          <StyledInput1 placeholder="0"
+          <InputUnstakeAmount placeholder="0"
             value={unstakeInputValue}
+            min='0'
             type="number"
             onChange={onChangeUnStakeInputValue}
           />
@@ -531,9 +519,6 @@ export default function Staking() {
           ) : (
             <ConnectWalletButton />
           )}
-          <p className="fee-title" style={{ marginTop: '1rem' }}>
-            This application is decentralized and is provided with no guarantees or warranties of any kind.
-          </p>
         </div>
       </StyledContentContainer>
       <StyledContentContainer style={{ marginLeft: isMobile ? '20px' : '100px', marginTop: '50px' }}>
@@ -542,20 +527,20 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">Total Referral Rewards:</div>
             <div className="vault-value">
-              {totalReferralAmount}
+              {displayFixed(totalReferralAmount, 2, 9)} SSG
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Pending Referral Rewards:</div>
             <div className="vault-value">
-              {pendingReferralAmount}
+              {displayFixed(pendingReferralAmount, 2, 9)} SSG
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', color: '#c5c6d1', fontSize: '15px' }}>
             Share your referral link to earn 10% of Rewards
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', position: "relative", marginTop: '10px', marginBottom: '20px' }}>
-            <StyledReferral
+            <ShowReferral
               readOnly
               value={refLink}
               onClick={() => {
@@ -576,6 +561,9 @@ export default function Staking() {
             <ConnectWalletButton />
           )}
         </div>
+        <p className="fee-title">
+          This application is decentralized and is provided with no guarantees or warranties of any kind.
+        </p>
       </StyledContentContainer>
     </>
   )

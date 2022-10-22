@@ -168,3 +168,14 @@ export const useBNBBusdPrice = ({ forceMainnet } = { forceMainnet: false }): Pri
   const wbnb: Token = isTestnet ? WBNB[ChainId.BSC_TESTNET] : WBNB[ChainId.BSC]
   return usePriceByPairs(BUSD[wbnb.chainId], wbnb)
 }
+
+// @Note: only fetch from one pair
+export const useSSGBNBPrice = ({ forceMainnet } = { forceMainnet: false }): Price<Currency, Currency> | undefined => {
+  const { chainId } = useActiveWeb3React()
+  const isTestnet = !forceMainnet && isChainTestnet(chainId)
+  // Return bsc testnet wbnb if chain is testnet
+  const wbnb: Token = isTestnet ? WBNB[ChainId.BSC_TESTNET] : WBNB[ChainId.BSC]
+  // Return bsc testnet cake if chain is testnet
+  const cake: Token = isTestnet ? CAKE[ChainId.BSC_TESTNET] : CAKE[ChainId.BSC]
+  return usePriceByPairs(wbnb, cake)
+}

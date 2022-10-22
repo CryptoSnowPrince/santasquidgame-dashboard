@@ -433,6 +433,16 @@ export const getPendingReward = async (_stakingContract: Staking, addr: string) 
   return res;
 }
 
+export const getPendingRefReward = async (_referralContact: Referral, addr: string) => {
+  const res = await _referralContact.pendingReferralCommissions(addr);
+  return res;
+}
+
+export const getTotalRefReward = async (_referralContact: Referral, addr: string) => {
+  const res = await _referralContact.totalReferralCommissions(addr)
+  return res;
+}
+
 export const getRewardPerBlock = async (_stakingContract: Staking) => {
   const res = await _stakingContract._rewardPerBlock();
   return res;
