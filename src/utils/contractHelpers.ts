@@ -96,7 +96,7 @@ import bCakeFarmBoosterProxyFactoryAbi from 'config/abi/bCakeFarmBoosterProxyFac
 import bCakeProxyAbi from 'config/abi/bCakeProxy.json'
 import stakingAbi from 'config/abi/staking.json'
 import tokenAbi from 'config/abi/token.json'
-import referralAbi from '.config/abi/referral.json'
+import referralAbi from 'config/abi/referral.json'
 
 // Types
 import type {
