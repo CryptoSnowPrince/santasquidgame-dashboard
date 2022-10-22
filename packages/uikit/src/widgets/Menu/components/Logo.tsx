@@ -53,7 +53,7 @@ const Logo: React.FC<React.PropsWithChildren<Props>> = ({ isPushed, togglePush, 
   const innerLogo = (
     <>
       <LogoIcon className="mobile-icon" />
-      <LogoWithTextIcon className="desktop-icon" isDark={isDark} />
+      {/* <LogoWithTextIcon className="desktop-icon" isDark={isDark} /> */}
     </>
   );
 
@@ -66,15 +66,15 @@ const Logo: React.FC<React.PropsWithChildren<Props>> = ({ isPushed, togglePush, 
           <HamburgerIcon width="24px" color="textSubtle" />
         )}
       </MenuButton>
-      {/* {isAbsoluteUrl ? (
-        <StyledLink as="a" href={href} aria-label="Pancake home page">
+      {isAbsoluteUrl ? (
+        <StyledLink as="a" href={href} aria-label="SSG home page">
           {innerLogo}
         </StyledLink>
       ) : (
-        <StyledLink href={href} as={linkComponent} aria-label="Pancake home page">
+        <StyledLink href={href} as={linkComponent} aria-label="SSG home page">
           {innerLogo}
         </StyledLink>
-      )} */}
+      )}
     </Flex>
   );
 };
