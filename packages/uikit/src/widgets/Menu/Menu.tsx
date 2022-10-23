@@ -65,9 +65,9 @@ const BodyWrapper = styled.div`
   display: flex;
 `;
 
-const Inner = styled.div<{ isPushed: boolean; showMenu: boolean }>`
-  margin-left: ${({ isPushed }) => `${isPushed ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px`};
-  max-width: ${({ isPushed }) => `calc(100% - ${isPushed ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px)`};
+const Inner = styled.div<{ isMobile: boolean; isPushed: boolean; showMenu: boolean }>`
+  margin-left: ${({ isPushed, isMobile }) => `${isPushed || !isMobile ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px`};
+  max-width: ${({ isPushed, isMobile }) => `calc(100% - ${isPushed || !isMobile ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px)`};
   flex-grow: 1;
   transition: margin-top 0.2s, margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translate3d(0, 0, 0);
@@ -207,7 +207,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
             pushNav={setIsPushed}
             links={links}
           />
-          <Inner isPushed={isPushed} showMenu={showMenu}>
+          <Inner isMobile={isMobile} isPushed={isPushed} showMenu={showMenu}>
             {children}
             <Footer
               items={footerLinks}

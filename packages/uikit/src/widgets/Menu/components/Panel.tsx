@@ -11,7 +11,7 @@ interface Props extends PanelProps, PushedProps {
   isMobile: boolean;
 }
 
-const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean }>`
+const StyledPanel = styled.div<{ isMobile: boolean; isPushed: boolean; showMenu: boolean }>`
   position: fixed;
   padding-top: ${({ showMenu }) => (showMenu ? "5px" : 0)};
   top: 0;
@@ -22,26 +22,26 @@ const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean }>`
   flex-shrink: 0;
   // background-color: ${({ theme }) => theme.nav.background};
   background-color: #302f30;
-  width: ${({ isPushed }) => (isPushed ? `100%` : 0)};
+  width: ${({ isPushed, isMobile }) => (isPushed || !isMobile ? `100%` : 0)};
   height: 100vh;
   transition: padding-top 0.2s, width 0.2s;
-  border-right: ${({ isPushed }) => (isPushed ? "2px solid rgba(133, 133, 133, 0.1)" : 0)};
+  border-right: ${({ isPushed, isMobile }) => (isPushed || !isMobile ? "2px solid rgba(133, 133, 133, 0.1)" : 0)};
   box-shadow: rgb(203 87 65) 0px 0px 15px 4px;
   z-index: 11;
-  overflow: ${({ isPushed }) => (isPushed ? "initial" : "hidden")};
+  overflow: ${({ isPushed, isMobile }) => (isPushed || !isMobile ? "initial" : "hidden")};
   transform: translate3d(0, 0, 0);
 
   ${({ theme }) => theme.mediaQueries.xl} {
     border-right: 0px solid rgba(133, 133, 133, 0.1);
-    width: ${({ isPushed }) => `${isPushed ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px`};
+    width: ${({ isPushed, isMobile }) => `${isPushed || !isMobile ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px`};
   }
   box-shadow: rgb(203 87 65) 0px 0px 15px 4px;
 `;
 
 const Panel: React.FC<Props> = (props) => {
-  const { isPushed, showMenu } = props;
+  const { isPushed, isMobile, showMenu } = props;
   return (
-    <StyledPanel isPushed={isPushed} showMenu={showMenu}>
+    <StyledPanel isMobile={isMobile} isPushed={isPushed} showMenu={showMenu}>
       <LogoIcon className="mobile-icon" />
       <PanelBody {...props} />
       {/* <PanelFooter {...props} /> */}

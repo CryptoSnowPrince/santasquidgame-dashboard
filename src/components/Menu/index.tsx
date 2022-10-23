@@ -7,18 +7,21 @@ import PhishingWarningBanner from 'components/PhishingWarningBanner'
 import { NetworkSwitcher } from 'components/NetworkSwitcher'
 import { oldConfig } from 'components/Menu/config/config'
 import useTheme from 'hooks/useTheme'
-import { useCakeBusdPrice } from 'hooks/useBUSDPrice'
+import { useSSGBNBPrice, useBNBBusdPrice } from 'hooks/useBUSDPrice'
 import { usePhishingBannerManager } from 'state/user/hooks'
 import UserMenu from './UserMenu'
 import { useMenuItems } from './hooks/useMenuItems'
 import GlobalSettings from './GlobalSettings'
 import { getActiveMenuItem, getActiveSubMenuItem } from './utils'
+import { multiplyPriceByAmount } from 'utils/prices'
 import { footerLinks } from './config/footerConfig'
 import { SettingsMode } from './GlobalSettings/types'
 
 const Menu = (props) => {
   const { isDark, setTheme } = useTheme()
-  const cakePriceUsd = useCakeBusdPrice({ forceMainnet: true })
+  const ssgPriceBNB = useSSGBNBPrice({ forceMainnet: true })
+  const bnbPriceUsd = useBNBBusdPrice({ forceMainnet: true })
+
   const { currentLanguage, setLanguage, t } = useTranslation()
   // const { pathname } = useRouter()
   const [showPhishingWarningBanner] = usePhishingBannerManager()
@@ -41,7 +44,7 @@ const Menu = (props) => {
   }, [t])
 
   useEffect(() => {
-    if(!isDark) {
+    if (!isDark) {
       setTheme('dark')
     }
   }, [])
@@ -63,7 +66,7 @@ const Menu = (props) => {
         currentLang={currentLanguage.code}
         langs={languageList}
         setLang={setLanguage}
-        cakePriceUsd={cakePriceUsd}
+        cakePriceUsd={multiplyPriceByAmount(ssgPriceBNB, multiplyPriceByAmount(bnbPriceUsd, 1))}
         // links={menuItems}
         links={oldConfig}
         // subLinks={activeMenuItem?.hideSubNav || activeSubMenuItem?.hideSubNav ? [] : activeMenuItem?.items}
