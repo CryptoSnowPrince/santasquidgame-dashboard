@@ -453,7 +453,7 @@ export const getRewardPerBlock = async (_stakingContract: Staking) => {
   return res;
 }
 
-export const TOKEN_DECIMALS: number = 9
+export const TOKEN_DECIMALS = 9
 
 export const stake = async (_stakingContract: Staking, addr: string, amount: string) => {
   let referrer = window.localStorage.getItem("REFERRAL");
