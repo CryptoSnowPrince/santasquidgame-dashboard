@@ -23,6 +23,7 @@ import {
   getPendingRefReward,
   getTotalRefReward,
   withdrawReferral,
+  getReferralsCount,
 } from 'utils/contractHelpers';
 import { ADMIN_ACCOUNT, REF_PREFIX } from 'config/constants'
 import { CopyButton } from 'components/CopyButton'
@@ -208,6 +209,8 @@ export default function Staking() {
   const [stakedAmount, setStakedAmount] = useState("0");
   const [pendingReward, setPendingReward] = useState("0");
   const [claimedReward, setClaimedReward] = useState("0");
+
+  const [referralsCount, setReferralsCount] = useState("0")
   const [totalReferralAmount, setTotalReferralAmount] = useState("0");
   const [pendingReferralAmount, setPendingReferralAmount] = useState("0");
 
@@ -314,6 +317,9 @@ export default function Staking() {
 
       const resTotalRefReward = await getTotalRefReward(referralContract, account);
       setTotalReferralAmount(resTotalRefReward.toString())
+
+      const resReferralsCount = await getReferralsCount(referralContract, account);
+      setReferralsCount(resReferralsCount.toString())
     } catch (err) {
       console.log("error = ", err)
     }
@@ -386,6 +392,11 @@ export default function Staking() {
     }
     setPendingTx(true)
     if (referralContract && account) {
+      if (Number.isNaN(displayFixed(pendingReferralAmount, 2, 9)) || parseFloat(displayFixed(pendingReferralAmount, 2, 9)) <= 0) {
+        toastError('Error', 'Pending rewards is zero!')
+        return;
+      }
+
       const res = await withdrawReferral(referralContract, account);
       // showToast(res.message, res.success ? "success" : "error");
       if (res.success) {
@@ -403,6 +414,11 @@ export default function Staking() {
     }
     setPendingTx(true)
     if (stakingContract && account) {
+      if (Number.isNaN(displayFixed(pendingReward, 2, 9)) || parseFloat(displayFixed(pendingReward, 2, 9)) <= 0) {
+        toastError('Error', 'Pending rewards is zero!')
+        return;
+      }
+
       const res = await claimRewards(stakingContract, account);
       // showToast(res.message, res.success ? "success" : "error");
       if (res.success) {
@@ -572,6 +588,12 @@ export default function Staking() {
       <StyledContentContainer style={{ marginLeft: isMobile ? '20px' : '100px', marginTop: '50px' }}>
         <div style={{ margin: '1rem 0px' }}>
           <h5 className="title-6">REFERRAL REWARDS</h5>
+          <div className="vault-info">
+            <div className="vault-title">Total Referrals:</div>
+            <div className="vault-value">
+              {referralsCount} Accounts
+            </div>
+          </div>
           <div className="vault-info">
             <div className="vault-title">Total Referral Rewards:</div>
             <div className="vault-value">

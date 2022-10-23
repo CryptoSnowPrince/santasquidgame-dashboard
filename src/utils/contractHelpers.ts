@@ -438,6 +438,11 @@ export const getPendingRefReward = async (_referralContact: Referral, addr: stri
   return res;
 }
 
+export const getReferralsCount = async (_referralContact: Referral, addr: string) => {
+  const res = await _referralContact.referralsCount(addr);
+  return res;
+}
+
 export const getTotalRefReward = async (_referralContact: Referral, addr: string) => {
   const res = await _referralContact.totalReferralCommissions(addr)
   return res;
