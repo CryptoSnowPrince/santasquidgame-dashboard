@@ -22,6 +22,7 @@ import {
   withdraw,
   getPendingRefReward,
   getTotalRefReward,
+  withdrawReferral,
 } from 'utils/contractHelpers';
 import { ADMIN_ACCOUNT, REF_PREFIX } from 'config/constants'
 import { CopyButton } from 'components/CopyButton'
@@ -227,7 +228,7 @@ export default function Staking() {
 
   const userShare = useCallback(() => {
     const val = parseFloat(totalStaked) > 0 && !Number.isNaN(parseFloat(totalStaked)) ? parseFloat(stakedAmount) / parseFloat(totalStaked) : 0;
-    return Number.isNaN(val) ? 0 : val;
+    return Number.isNaN(val) ? 0 : val * 100;
   }, [totalStaked, stakedAmount])
 
 
@@ -294,15 +295,12 @@ export default function Staking() {
       setUserBalance(displayFixed(resUserBalance.toString(), 2, 9));
 
       const _allowance = await getAllowance(tokenContract, account, getStakingAddress(chainId));
-      console.log('[PRINCE](apy):1')
       const val = ethers.utils.parseUnits(stakeInputValue, TOKEN_DECIMALS)
-      console.log('[PRINCE](apy):2', val)
 
       if (_allowance.lt(val))
         setIsApproved(false);
       else
         setIsApproved(true);
-      console.log('[PRINCE](apy):3')
 
       const resUserInfo = await getUserInfo(stakingContract, account);
       setStakedAmount(resUserInfo?.amount.toString())
@@ -319,7 +317,6 @@ export default function Staking() {
     } catch (err) {
       console.log("error = ", err)
     }
-    console.log("updateParameters isUpdating=", "pass");
     setIsUpdating(false);
   }
 
@@ -383,6 +380,23 @@ export default function Staking() {
     setUnStakeInputValue(e.target.value);
   }
 
+  const onWithdrawReferral = async () => {
+    if (pendingTx) {
+      toastWarning('Warning', 'Pending transaction')
+    }
+    setPendingTx(true)
+    if (referralContract && account) {
+      const res = await withdrawReferral(referralContract, account);
+      // showToast(res.message, res.success ? "success" : "error");
+      if (res.success) {
+        toastSuccess('Success', res.message)
+      } else {
+        toastError('Error', res.message)
+      }
+    }
+    setPendingTx(false)
+  }
+
   const onClaimRewards = async () => {
     if (pendingTx) {
       toastWarning('Warning', 'Pending transaction')
@@ -431,7 +445,7 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">APY:</div>
             <div className="vault-value">
-              {parseFloat(apy) <= 0 || Number.isNaN(apy) ? '--%' : `${displayFixed(apy, 2)}%`}
+              {parseFloat(apy) <= 0 || Number.isNaN(apy) ? '--%' : `${displayFixedNumber(apy, 2)}%`}
             </div>
           </div>
           <div className="vault-info">
@@ -587,7 +601,7 @@ export default function Staking() {
           </div>
           {account ? (
             <ActionButton style={{ fontSize: '16px' }}
-              onClick={onUnstake}
+              onClick={onWithdrawReferral}
             >
               CLAIM REFERRAL REWARDS
             </ActionButton>

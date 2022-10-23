@@ -64,19 +64,19 @@ const WalletInfo: React.FC<WalletInfoProps> = ({ hasLowNativeBalance, onDismiss 
         </Flex>
         {!isFetched ? <Skeleton height="22px" width="60px" /> : <Text>{formatBigNumber(data.value, 6)}</Text>}
       </Flex>
-      {/* <Flex alignItems="center" justifyContent="space-between" mb="24px" mt="12px">
+      <Flex alignItems="center" justifyContent="space-between" mb="24px" mt="12px">
         <Flex alignItems="center">
           {!isBSC && <ChainLogo chainId={56} />}
           <Text ml={isBSC ? 0 : '8px'} color="textSubtle">
-            {t('CAKE Balance')}
+            {t('SGG Balance')}
           </Text>
         </Flex>
         {cakeFetchStatus !== FetchStatus.Fetched ? (
           <Skeleton height="22px" width="60px" />
         ) : (
-          <Text>{formatBigNumber(cakeBalance, 3)}</Text>
+          <Text>{formatBigNumber(cakeBalance, 6, 9)}</Text>
         )}
-      </Flex> */}
+      </Flex>
       <Flex alignItems="center" justifyContent="end" mb="24px">
         <LinkExternal href={getBlockExploreLink(account, 'address', chainId)}>
           {t('View on %site%', {

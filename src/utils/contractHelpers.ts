@@ -492,9 +492,27 @@ export const withdraw = async (_stakingContract: Staking, account: string, amoun
   }
 }
 
+export const withdrawReferral = async (_referralContract: Referral, account: string) => {
+  try {
+    await _referralContract.withdrawReferralReward({
+      from: account
+    });
+    return {
+      success: true,
+      message: "Successfully claimed referral rewards!"
+    }
+  } catch (err) {
+    return {
+      success: false,
+      // message: err.message
+      message: "err unstaked!"
+    }
+  }
+}
+
 export const claimRewards = async (_stakingContract: Staking, account: string) => {
   try {
-    await _stakingContract.withdraw("0", { from: account });
+    await _stakingContract.withdraw(ethers.utils.parseUnits("0", TOKEN_DECIMALS), { from: account });
     return {
       success: true,
       message: "Successfully claimed!"
@@ -503,7 +521,7 @@ export const claimRewards = async (_stakingContract: Staking, account: string) =
     return {
       success: false,
       // message: err.message 
-      message: "err claimed!"
+      message: "err claimed referral rewards!"
     }
   }
 }
