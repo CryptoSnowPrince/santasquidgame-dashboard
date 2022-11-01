@@ -281,7 +281,7 @@ export default function Staking() {
       setTotalStaked(resPoolInfo?.amount.toString())
 
       const resRewardPerBlock = await getRewardPerBlock(stakingContract);
-      const _apy = resPoolInfo?.amount.gt(0) ? (resRewardPerBlock.mul(288).mul(365).div(resPoolInfo?.amount)).toString() : '0'
+      const _apy = resPoolInfo?.amount.gt(0) ? (resRewardPerBlock.mul(288).mul(365).mul(100).div(resPoolInfo?.amount)).toString() : '0'
       console.log('[PRINCE](apy): ', _apy)
       setAPY(_apy);
 
