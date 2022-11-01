@@ -149,7 +149,7 @@ export default {
     97: '',
   },
   staking: {
-    56: '0xD59B3D8e5dda0ad0d535013E97Fc905eC4E92D44',
+    56: '0xE8eD5F5014496CA8525370956B32c2430e00Bf43',
     97: '0xC2164D628AE1B9E06645B18B95F48F75Fc4a3cD2',
   },
   token: {
