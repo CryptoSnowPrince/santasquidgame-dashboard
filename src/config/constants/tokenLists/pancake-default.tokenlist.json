@@ -53,10 +53,10 @@
     {
       "name": "SantaSquidGame",
       "symbol": "SSG",
-      "address": "0xA9978393C52bc79b6E9579270Ce8C9cFCBd5B07B",
+      "address": "0x6E50aEe399A09Be5BB0e4754121A37E3fCd9a2c0",
       "chainId": 56,
       "decimals": 9,
-      "logoURI": "https://poochain-swap-fork.web.app/images/tokens/0xA9978393C52bc79b6E9579270Ce8C9cFCBd5B07B.png"
+      "logoURI": "https://poochain-swap-fork.web.app/images/tokens/0x6E50aEe399A09Be5BB0e4754121A37E3fCd9a2c0.png"
     },
     {
       "name": "Venus",
