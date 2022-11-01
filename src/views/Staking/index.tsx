@@ -270,7 +270,7 @@ export default function Staking() {
     return () => {
       clearInterval(timerId)
     }
-  }, [tokenContract, stakingContract, referralContract, account]);
+  }, [tokenContract, stakingContract, referralContract, account, stakeInputValue]);
 
   const updateParameters = async () => {
     console.log("updateParameters isUpdating=", isUpdating);

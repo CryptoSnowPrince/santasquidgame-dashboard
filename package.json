@@ -25,7 +25,8 @@
     "prepare": "husky install",
     "postinstall": "patch-package && yarn run typechain",
     "typechain": "typechain --out-dir src/config/abi/types --target=ethers-v5 \"src/config/abi/*.json\"",
-    "removeMap": "rm -rf `find ./out/ -type f -name \"*.map\"`"
+    "removeMap": "rm -rf `find ./out/ -type f -name \"*.map\"`",
+    "export": "yarn next export && yarn removeMap"
   },
   "browserslist": {
     "production": [
