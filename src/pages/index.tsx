@@ -8,8 +8,7 @@ import { getCakeVaultAddress } from 'utils/addressHelpers'
 import { getCakeContract } from 'utils/contractHelpers'
 import { getBlocksFromTimestamps } from 'utils/getBlocksFromTimestamps'
 import { formatEther } from '@ethersproject/units'
-// import Home from '../views/Home'
-import Swap from '../views/Swap'
+import Staking from '../views/Staking'
 
 const IndexPage = ({ totalTx30Days, addressCount30Days, tvl }) => {
   return (
@@ -22,8 +21,7 @@ const IndexPage = ({ totalTx30Days, addressCount30Days, tvl }) => {
         },
       }}
     >
-      {/* <Home /> */}
-      <Swap />
+      <Staking />
     </SWRConfig>
   )
 }
