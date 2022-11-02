@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
-import { Button, Input, useToast, useMatchBreakpoints, Flex } from '@pancakeswap/uikit'
+import { Button, Input, useToast, useMatchBreakpoints, Flex, Text } from '@pancakeswap/uikit'
 import { StyledConnectButton } from '@pancakeswap/uikit/src/components/Button/StyledButton'
 import { ethers } from 'ethers'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
@@ -31,6 +31,7 @@ import { displayEther, displayFixed, displayFixedNumber, displayUnits, getBNBPri
 import ConnectWalletButton from '../../components/ConnectWalletButton'
 import { AppHeader, AppBody } from '../../components/App'
 import Page from '../Page'
+import ComingSoon from './ComingSoon'
 
 const ActionButton = styled(StyledConnectButton)`
   padding: 10px 20px !important;
@@ -459,6 +460,7 @@ export default function Staking() {
   return (
     <>
       {/* <Overlay onClick={onHandleSideBar} isOpen={isOpen} /> */}
+      <ComingSoon />
       <StyledContentContainer style={{ marginLeft: isMobile ? '20px' : '100px', marginTop: '50px' }}>
         <div style={{ margin: '1rem 0px' }}>
           <h5 className="title-6">OUR STAKING PLATFORM</h5>
