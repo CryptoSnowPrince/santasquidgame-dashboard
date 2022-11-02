@@ -199,9 +199,10 @@ export default config
 
 export const oldConfig: MenuEntry[] = [
   {
-    label: 'Website',
-    href: 'https://www.santasquidgame.com',
-    icon: 'GlobeIcon',
+    label: 'Staking',
+    href: '/staking',
+    icon: 'StakingIcon',
+    initialOpenState: true,
   },
   {
     label: 'Trade',
@@ -209,10 +210,9 @@ export const oldConfig: MenuEntry[] = [
     icon: 'TradeIcon',
   },
   {
-    label: 'Staking',
-    href: '/staking',
-    icon: 'StakingIcon',
-    initialOpenState: true,
+    label: 'Website',
+    href: 'https://www.santasquidgame.com',
+    icon: 'GlobeIcon',
   },
   {
     label: 'Telegram',
