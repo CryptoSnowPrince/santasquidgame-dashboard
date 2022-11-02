@@ -250,7 +250,7 @@ export default function Staking() {
         window.localStorage.setItem("REFERRAL", ADMIN_ACCOUNT);
       }
     }
-    console.log("[PRINCE](referral): ", referral);
+    // console.log("[PRINCE](referral): ", referral);
   }, [newReferral])
 
   let timerId: NodeJS.Timeout;
@@ -271,14 +271,14 @@ export default function Staking() {
         updateParameters();
       }
     }, 10000);
-    console.log("timerId = ", timerId)
+    // console.log("timerId = ", timerId)
     return () => {
       clearInterval(timerId)
     }
   }, [tokenContract, stakingContract, referralContract, account, stakeInputValue]);
 
   const updateParameters = async () => {
-    console.log("updateParameters isUpdating=", isUpdating);
+    // console.log("updateParameters isUpdating=", isUpdating);
     try {
       setIsUpdating(true);
 
@@ -287,7 +287,7 @@ export default function Staking() {
 
       const resRewardPerBlock = await getRewardPerBlock(stakingContract);
       const _apy = resPoolInfo?.amount.gt(0) ? (resRewardPerBlock.mul(28800).mul(365).mul(100).div(resPoolInfo?.amount)).toString() : '0'
-      console.log('[PRINCE](apy): ', _apy)
+      // console.log('[PRINCE](apy): ', _apy)
       setAPY(_apy);
 
       if (!account) {
@@ -345,7 +345,7 @@ export default function Staking() {
       toastWarning('Warning', 'Pending transaction')
     }
     setPendingTx(true)
-    console.log('[PRINCE](onstake)', isApproved)
+    // console.log('[PRINCE](onstake)', isApproved)
     if (stakingContract && account) {
       if (!(parseInt(stakeInputValue) <= parseInt(userBalance))) {
         // showToast("Input stake amount correctly!", "error");

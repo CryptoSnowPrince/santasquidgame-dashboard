@@ -1,4 +1,4 @@
-import { BunnyPlaceholderIcon, Flex, Heading } from '@pancakeswap/uikit'
+import { BunnyPlaceholderIcon, Flex, Heading, LogoIcon } from '@pancakeswap/uikit'
 import { useTranslation } from '@pancakeswap/localization'
 
 interface ComingSoonProps {
@@ -10,7 +10,8 @@ const ComingSoon: React.FC<React.PropsWithChildren<ComingSoonProps>> = ({ childr
 
   return (
     <Flex flexDirection="column" alignItems="center" justifyContent="center" p="24px">
-      <BunnyPlaceholderIcon width="72px" height="72px" />
+      {/* <BunnyPlaceholderIcon width="72px" height="72px" /> */}
+      <LogoIcon width="72px" height="72px" />
       <Heading as="h5" scale="md" color="textDisabled">
         {children || t('Coming Soon!')}
       </Heading>
