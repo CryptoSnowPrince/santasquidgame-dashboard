@@ -144,11 +144,11 @@ const menuIcon = (icon: string) => {
 
 const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
   //   const location = useLocation();
-  const [pathname, setPathname] = useState("/swap");
+  const [pathname, setPathname] = useState("/staking");
 
   useEffect(() => {
     if (location?.pathname === "" || location?.pathname === "/") {
-      setPathname("/swap");
+      setPathname("/staking");
     } else {
       setPathname(location?.pathname || "");
     }

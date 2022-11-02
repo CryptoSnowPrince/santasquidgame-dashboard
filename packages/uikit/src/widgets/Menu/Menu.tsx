@@ -139,10 +139,10 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
   }, [totalTopMenuHeight, window.document.body.clientWidth]);
 
   // Find the home link if provided
-  const homeLink = links.find((link) => link.label === "Home");
+  // const homeLink = links.find((link) => link.label === "Home");
 
-  const subLinksWithoutMobile = subLinks?.filter((subLink) => !subLink.isMobileOnly);
-  const subLinksMobileOnly = subLinks?.filter((subLink) => subLink.isMobileOnly);
+  // const subLinksWithoutMobile = subLinks?.filter((subLink) => !subLink.isMobileOnly);
+  // const subLinksMobileOnly = subLinks?.filter((subLink) => subLink.isMobileOnly);
 
   return (
     <MenuContext.Provider value={{ linkComponent }}>
@@ -155,7 +155,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
                 isPushed={isPushed}
                 togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
                 isDark={isDark}
-                href={homeLink?.href ?? "/swap"} />
+                href="/staking" />
               {/* {!isMobile && <MenuItems items={links} activeItem={activeItem} activeSubItem={activeSubItem} ml="24px" />} */}
             </Flex>
             <Flex alignItems="center" height="100%">

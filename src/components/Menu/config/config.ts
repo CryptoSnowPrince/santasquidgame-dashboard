@@ -207,12 +207,12 @@ export const oldConfig: MenuEntry[] = [
     label: 'Trade',
     href: '/swap',
     icon: 'TradeIcon',
-    initialOpenState: true,
   },
   {
     label: 'Staking',
     href: '/staking',
     icon: 'StakingIcon',
+    initialOpenState: true,
   },
   {
     label: 'Telegram',
