@@ -27,11 +27,11 @@ import {
 } from 'utils/contractHelpers';
 import { ADMIN_ACCOUNT, REF_PREFIX } from 'config/constants'
 import { CopyButton } from 'components/CopyButton'
+import ComingSoon from 'views/Teams/components/ComingSoon'
 import { displayEther, displayFixed, displayFixedNumber, displayUnits, getBNBPrice, getTokenPrice, isAddress } from '../../utils'
 import ConnectWalletButton from '../../components/ConnectWalletButton'
 import { AppHeader, AppBody } from '../../components/App'
 import Page from '../Page'
-import ComingSoon from './ComingSoon'
 
 const ActionButton = styled(StyledConnectButton)`
   padding: 10px 20px !important;
