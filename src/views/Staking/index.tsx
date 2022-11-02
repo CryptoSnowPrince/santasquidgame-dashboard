@@ -180,6 +180,7 @@ const ShowReferral = styled(Input) <{ textAlign?: string }>`
 const MIN_REFFERAL_WITHDRAW = 0.3
 
 export default function Staking() {
+  const comingSoon = true;
   // const [isOpen, setOpen] = useState(false);
   const { account, chainId } = useActiveWeb3React()
   const { toastError, toastSuccess, toastWarning } = useToast()
@@ -200,7 +201,8 @@ export default function Staking() {
 
   const [stakeInputValue, setStakeInputValue] = useState('0');
   const [unstakeInputValue, setUnStakeInputValue] = useState('0');
-  const [pendingTx, setPendingTx] = useState(false);
+  // const [pendingTx, setPendingTx] = useState(false);
+  const [pendingTx, setPendingTx] = useState(true);
 
   const [refLink, setRefLink] = useState(`${REF_PREFIX}0x0000000000000000000000000000000000000000`);
 
@@ -463,19 +465,22 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">APY:</div>
             <div className="vault-value">
-              {parseFloat(apy) <= 0 || Number.isNaN(apy) ? '--%' : `${displayFixedNumber(apy, 2)}%`}
+              {/* {parseFloat(apy) <= 0 || Number.isNaN(apy) ? '--%' : `${displayFixedNumber(apy, 2)}%`} */}
+              1000.00%
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Total Staked:</div>
             <div className="vault-value">
-              {displayFixed(totalStaked, 2, 9)} SSG
+              {/* {displayFixed(totalStaked, 2, 9)} SSG */}
+              900,000,000 SSG
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Total Staked (USD):</div>
             <div className="vault-value">
-              {`$ ${displayFixedNumber(totalStakedUSD(), 2)}`}
+              {/* {`$ ${displayFixedNumber(totalStakedUSD(), 2)}`} */}
+              $7,890,537
             </div>
           </div>
         </div>
@@ -486,11 +491,13 @@ export default function Staking() {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
               Your tokens:
-              {userBalance} SSG
+              {/* {userBalance} SSG */}
+              9,999,999 SSG
             </span>
             <button type='button'
               style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer', border: 0, padding: 0, background: "transparent" }}
               onClick={onClickStakeMax}
+              disabled={pendingTx || comingSoon}
             >
               Max
             </button>
@@ -505,7 +512,7 @@ export default function Staking() {
           />
           {account ? (
             <ActionButton
-              disabled={pendingTx || parseFloat(stakeInputValue) <= 0 || Number.isNaN(parseFloat(stakeInputValue))}
+              disabled={comingSoon || pendingTx || parseFloat(stakeInputValue) <= 0 || Number.isNaN(parseFloat(stakeInputValue))}
               onClick={() => (isApproved ? onStake() : onApprove())}
             >
               {(isApproved ? 'STAKE' : 'APPROVE')}
@@ -521,46 +528,53 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">Your Staked:</div>
             <div className="vault-value">
-              {displayFixed(stakedAmount, 2, 9)} SSG
+              {/* {displayFixed(stakedAmount, 2, 9)} SSG */}
+              900,000 SSG
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Stake (USD):</div>
             <div className="vault-value">
-              {`$ ${displayFixedNumber(userStakedUSD(), 2)}`}
+              {/* {`$ ${displayFixedNumber(userStakedUSD(), 2)}`} */}
+              $7,890
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Share:</div>
             <div className="vault-value">
-              {`${displayFixedNumber(userShare(), 2)}%`}
+              {/* {`${displayFixedNumber(userShare(), 2)}%`} */}
+              0.1%
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Claimed Rewards:</div>
             <div className="vault-value">
-              {displayFixed(claimedReward, 2, 9)} SSG
+              {/* {displayFixed(claimedReward, 2, 9)} SSG */}
+              188,745 SSG
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Pending Rewards:</div>
             <div className="vault-value">
-              {displayFixed(pendingReward, 2, 9)} SSG
+              {/* {displayFixed(pendingReward, 2, 9)} SSG */}
+              9,054 SSG
             </div>
           </div>
           <ActionButton style={{ padding: '11px 22px', fontSize: '16px', marginTop: '10px' }}
-            disabled={pendingTx || parseFloat(displayFixed(pendingReward, 2, 9)) <= 0}
+            disabled={comingSoon || pendingTx || parseFloat(displayFixed(pendingReward, 2, 9)) <= 0}
             onClick={onClaimRewards}
           >
             CLAIM EARNINGS
           </ActionButton>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
-              {`Staked Tokens: ${displayFixed(stakedAmount, 2, 9)} SSG`}
+              {/* {`Staked Tokens: ${displayFixed(stakedAmount, 2, 9)} SSG`} */}
+              900,000 SSG
             </span>
             <button type='button'
               style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer', border: 0, padding: 0, background: "transparent" }}
               onClick={onClickUnStakeMax}
+              disabled={pendingTx || comingSoon}
             >
               Max
             </button>
@@ -575,7 +589,7 @@ export default function Staking() {
             <ActionButton style={{ padding: '11px 22px', fontSize: '16px' }}
               onClick={onUnstake}
               disabled={
-                pendingTx ||
+                comingSoon || pendingTx ||
                 Number.isNaN(unstakeInputValue) ||
                 parseFloat(displayFixed(stakedAmount, 2, 9)) < parseFloat(unstakeInputValue)
               }
@@ -593,19 +607,22 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">Total Referrals:</div>
             <div className="vault-value">
-              {referralsCount} Accounts
+              {/* {referralsCount} Accounts */}
+              324 Accounts
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Total Referral Rewards:</div>
             <div className="vault-value">
-              {displayFixed(totalReferralAmount, 2, 9)} SSG
+              {/* {displayFixed(totalReferralAmount, 2, 9)} SSG */}
+              78,021 SSG
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Pending Referral Rewards:</div>
             <div className="vault-value">
-              {displayFixed(pendingReferralAmount, 2, 9)} SSG
+              {/* {displayFixed(pendingReferralAmount, 2, 9)} SSG */}
+              3,518 SSG
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', color: '#c5c6d1', fontSize: '15px' }}>
@@ -627,7 +644,7 @@ export default function Staking() {
             <ActionButton style={{ fontSize: '16px' }}
               onClick={onWithdrawReferral}
               disabled={
-                pendingTx ||
+                comingSoon || pendingTx ||
                 Number.isNaN(displayFixed(pendingReferralAmount, 2, 9)) ||
                 parseFloat(displayFixed(pendingReferralAmount, 2, 9)) < MIN_REFFERAL_WITHDRAW
               }
