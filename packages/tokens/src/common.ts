@@ -4,8 +4,8 @@ export const CAKE_MAINNET = new Token(
   ChainId.BSC,
   '0x6E50aEe399A09Be5BB0e4754121A37E3fCd9a2c0',
   9,
-  'Five',
-  'TestFive',
+  'SSG',
+  'Santa Squid Game',
   'https://poochain-swap-fork.web.app/',
 )
 
@@ -13,8 +13,8 @@ export const CAKE_TESTNET = new Token(
   ChainId.BSC_TESTNET,
   '0x5d750D2a56417b9F555c529818e0BF56B50962d9',
   9,
-  'Five',
-  'TestFive',
+  'SSG',
+  'Santa Squid Game',
   'https://poochain-swap-fork.web.app/',
 )
 

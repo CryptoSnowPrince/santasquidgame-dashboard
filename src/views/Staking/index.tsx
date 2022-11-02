@@ -469,7 +469,7 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">Total Staked:</div>
             <div className="vault-value">
-              {displayFixed(totalStaked, 2, 9)} Five
+              {displayFixed(totalStaked, 2, 9)} SSG
             </div>
           </div>
           <div className="vault-info">
@@ -486,7 +486,7 @@ export default function Staking() {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
               Your tokens:
-              {userBalance} Five
+              {userBalance} SSG
             </span>
             <button type='button'
               style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer', border: 0, padding: 0, background: "transparent" }}
@@ -521,7 +521,7 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">Your Staked:</div>
             <div className="vault-value">
-              {displayFixed(stakedAmount, 2, 9)} Five
+              {displayFixed(stakedAmount, 2, 9)} SSG
             </div>
           </div>
           <div className="vault-info">
@@ -539,13 +539,13 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">Your Claimed Rewards:</div>
             <div className="vault-value">
-              {displayFixed(claimedReward, 2, 9)} Five
+              {displayFixed(claimedReward, 2, 9)} SSG
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Your Pending Rewards:</div>
             <div className="vault-value">
-              {displayFixed(pendingReward, 2, 9)} Five
+              {displayFixed(pendingReward, 2, 9)} SSG
             </div>
           </div>
           <ActionButton style={{ padding: '11px 22px', fontSize: '16px', marginTop: '10px' }}
@@ -556,7 +556,7 @@ export default function Staking() {
           </ActionButton>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}>
             <span style={{ color: '#c5c6d1', fontSize: '15px' }}>
-              {`Staked Tokens: ${displayFixed(stakedAmount, 2, 9)} Five`}
+              {`Staked Tokens: ${displayFixed(stakedAmount, 2, 9)} SSG`}
             </span>
             <button type='button'
               style={{ color: '#c5c6d1', fontSize: '15px', cursor: 'pointer', border: 0, padding: 0, background: "transparent" }}
@@ -599,13 +599,13 @@ export default function Staking() {
           <div className="vault-info">
             <div className="vault-title">Total Referral Rewards:</div>
             <div className="vault-value">
-              {displayFixed(totalReferralAmount, 2, 9)} Five
+              {displayFixed(totalReferralAmount, 2, 9)} SSG
             </div>
           </div>
           <div className="vault-info">
             <div className="vault-title">Pending Referral Rewards:</div>
             <div className="vault-value">
-              {displayFixed(pendingReferralAmount, 2, 9)} Five
+              {displayFixed(pendingReferralAmount, 2, 9)} SSG
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', color: '#c5c6d1', fontSize: '15px' }}>
