@@ -50,3 +50,4 @@ debug.log*
 .firebase/
 firebase.json
 firebase-debug.log
+*.zip
