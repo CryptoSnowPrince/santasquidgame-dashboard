@@ -199,6 +199,11 @@ export default config
 
 export const oldConfig: MenuEntry[] = [
   {
+    label: 'Website',
+    href: 'https://www.santasquidgame.com',
+    icon: 'GlobeIcon',
+  },
+  {
     label: 'Trade',
     href: '/swap',
     icon: 'TradeIcon',
@@ -211,14 +216,12 @@ export const oldConfig: MenuEntry[] = [
   },
   {
     label: 'Telegram',
-    // href: 'https://t.me/PooChainPortal',
-    href: 'https://pancakeswap.finance',
+    href: 'https://t.me/santasquidgame_BSC',
     icon: 'TelegramIcon',
   },
   {
     label: 'Twitter',
-    // href: 'https://twitter.com/poo_chain',
-    href: 'https://pancakeswap.finance',
+    href: 'https://twitter.com/santasquidgame',
     icon: 'TwitterIcon',
   },
 ]
