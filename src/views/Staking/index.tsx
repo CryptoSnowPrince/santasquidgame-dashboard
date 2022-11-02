@@ -177,6 +177,8 @@ const ShowReferral = styled(Input) <{ textAlign?: string }>`
   }
 `
 
+const MIN_REFFERAL_WITHDRAW = 0.3
+
 export default function Staking() {
   // const [isOpen, setOpen] = useState(false);
   const { account, chainId } = useActiveWeb3React()
@@ -624,6 +626,11 @@ export default function Staking() {
           {account ? (
             <ActionButton style={{ fontSize: '16px' }}
               onClick={onWithdrawReferral}
+              disabled={
+                pendingTx ||
+                Number.isNaN(displayFixed(pendingReferralAmount, 2, 9)) ||
+                parseFloat(displayFixed(pendingReferralAmount, 2, 9)) < MIN_REFFERAL_WITHDRAW
+              }
             >
               CLAIM REFERRAL REWARDS
             </ActionButton>
