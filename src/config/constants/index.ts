@@ -32,6 +32,6 @@ export const GELATO_NATIVE = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
 export const EXCHANGE_DOCS_URLS = 'https://docs.pancakeswap.finance/products/pancakeswap-exchange'
 
-export const PUBLIC_URL = "https://poochain-swap-fork.web.app"
+export const PUBLIC_URL = "https://dashboard.santasquidgame.com"
 export const REF_PREFIX = `${PUBLIC_URL}/?ref=`
 export const ADMIN_ACCOUNT = '0x2Cc4467e7a94D55497B704a0acd90ACd1BF9A5af'
