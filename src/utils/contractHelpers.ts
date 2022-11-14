@@ -526,7 +526,7 @@ export const claimRewards = async (_stakingContract: Staking, account: string) =
     return {
       success: false,
       // message: err.message 
-      message: "err claimed referral rewards!"
+      message: "err claimed rewards!"
     }
   }
 }

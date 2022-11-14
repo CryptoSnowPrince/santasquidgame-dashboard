@@ -9,7 +9,7 @@ const tokens = {
       97: '0x5d750D2a56417b9F555c529818e0BF56B50962d9',
     },
     decimals: 9,
-    projectLink: "https://poochain-swap-fork.web.app/",
+    projectLink: "https://dashboard.santasquidgame.com/",
   },
   txl: {
     symbol: "TXL",

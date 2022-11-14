@@ -6,7 +6,7 @@ export const CAKE_MAINNET = new Token(
   9,
   'SSG',
   'Santa Squid Game',
-  'https://poochain-swap-fork.web.app/',
+  'https://dashboard.santasquidgame.com/',
 )
 
 export const CAKE_TESTNET = new Token(
@@ -15,7 +15,7 @@ export const CAKE_TESTNET = new Token(
   9,
   'SSG',
   'Santa Squid Game',
-  'https://poochain-swap-fork.web.app/',
+  'https://dashboard.santasquidgame.com/',
 )
 
 export const USDC_BSC = new Token(

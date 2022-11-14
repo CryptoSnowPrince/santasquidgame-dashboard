@@ -112,7 +112,7 @@ const ResetCSS = createGlobalStyle`
     color: transparent;
   }
   body {
-    background-image: url("https://poochain-swap-fork.web.app/images/SSG/flipped.png") !important;
+    background-image: url("https://dashboard.santasquidgame.com/images/SSG/flipped.png") !important;
     background-repeat: no-repeat;
     background-size: cover;
     background-color: #302f30 !important;
