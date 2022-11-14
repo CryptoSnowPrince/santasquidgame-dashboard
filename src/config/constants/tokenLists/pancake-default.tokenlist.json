@@ -53,10 +53,10 @@
     {
       "name": "SantaSquidGame",
       "symbol": "SSG",
-      "address": "0x6E50aEe399A09Be5BB0e4754121A37E3fCd9a2c0",
+      "address": "0xE7C7D21848dfD82Dac84e4Dc9Ecfc9658Aca5618",
       "chainId": 56,
       "decimals": 9,
-      "logoURI": "https://dashboard.santasquidgame.com/images/tokens/0x6E50aEe399A09Be5BB0e4754121A37E3fCd9a2c0.png"
+      "logoURI": "https://dashboard.santasquidgame.com/images/tokens/0xE7C7D21848dfD82Dac84e4Dc9Ecfc9658Aca5618.png"
     },
     {
       "name": "Venus",

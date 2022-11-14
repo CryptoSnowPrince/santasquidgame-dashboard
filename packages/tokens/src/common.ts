@@ -2,7 +2,7 @@ import { ChainId, Token } from '@pancakeswap/sdk'
 
 export const CAKE_MAINNET = new Token(
   ChainId.BSC,
-  '0x6E50aEe399A09Be5BB0e4754121A37E3fCd9a2c0',
+  '0xE7C7D21848dfD82Dac84e4Dc9Ecfc9658Aca5618',
   9,
   'SSG',
   'Santa Squid Game',
